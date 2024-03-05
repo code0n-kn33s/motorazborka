@@ -3,9 +3,10 @@ const router = new Router();
 const motoController = require('../controllers/Moto.controller')
 // const upload = require('../helpers')
 
-router.get('/:id', motoController.create);
+router.get('/:id', motoController.getOne);
 router.get('/', motoController.getAll);
-router.delete('/', motoController.create);
+router.patch('/', motoController.update);
+router.delete('/', motoController.delete);
 
 // ----
 

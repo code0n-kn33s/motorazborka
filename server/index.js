@@ -19,16 +19,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cors());
-// app.use('/api', routes);
 app.use(fileUpload());
 
 app.post('/api/device/create', deviceController.create);
 app.post('/api/moto/create', MotoController.create);
-// app.post('/api/model/create', ModelController.create);
 
-app.use('/models', Modelrouter);
-
-// обработка ошибок, последний middleware
+app.use('/api', routes);
 
 // Роут для статических файлов
 app.use(express.static(path.join(__dirname, 'static')));

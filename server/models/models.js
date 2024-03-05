@@ -19,12 +19,7 @@ const BasketDevices = sequelize.define('basket_devices', {
 const Type = sequelize.define('type', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
-})
-
-const Info = sequelize.define('info', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    title: {type: DataTypes.STRING},
-    description: {type: DataTypes.STRING},
+    disabled: {type: DataTypes.BOOLEAN, unique: false, defaultValue: false},
 })
 
 const Device = sequelize.define('device', {
@@ -32,6 +27,8 @@ const Device = sequelize.define('device', {
     name: {type: DataTypes.STRING, allowNull: false},
     price: {type: DataTypes.STRING, allowNull: false},
     images: {type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true},
+    title: {type: DataTypes.STRING, allowNull: true},
+    description: {type: DataTypes.STRING, allowNull: true},
 })
 
 const Moto = sequelize.define('moto', {
@@ -42,8 +39,8 @@ const Moto = sequelize.define('moto', {
 
 const Model = sequelize.define('model', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    model: {type: DataTypes.STRING, allowNull: true},
-    image: {type: DataTypes.STRING, allowNull: true}
+    model: {type: DataTypes.STRING, allowNull: false},
+    disabled: {type: DataTypes.BOOLEAN, unique: false, defaultValue: false}
 })
 
 const TypeAndMoto = sequelize.define('types_and_motos', {
@@ -68,9 +65,6 @@ Device.belongsTo(Moto)
 Moto.hasMany(Model)
 Model.belongsTo(Moto)
 
-Device.hasMany(Info)
-Info.hasMany(Device)
-
 Moto.belongsToMany(Type, {through: TypeAndMoto})
 Type.belongsToMany(Moto, {through: TypeAndMoto})
 
@@ -80,7 +74,6 @@ module.exports = {
     BasketDevices,
     Type,
     Moto,
-    Info,
     Device,
     TypeAndMoto,
 }

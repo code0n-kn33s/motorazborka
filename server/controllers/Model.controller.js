@@ -1,71 +1,70 @@
-const {Device} = require('../models/models')
-const uuid = require('uuid');
-const path = require('path');
+const {Model} = require('../models/models')
 const ApiError = require('../error/errorHandler');
 
 class ModelController {
-    async getOne (req, res) {
+    async getOne(req, res, next) {
+        const { id } = req.params;
 
-    }
-    async getAll (req, res) {
-        const { motoId, typeId } = req.body;
-        console.log('>----req.body---->', req.body);
-        let device;
-
-        if(motoId && typeId) {
-            device = await Device.findAll({where: {motoId, typeId}})
+        if (!id) {
+            return next(ApiError.badReq('Не задан id'))
         }
 
-        if(!motoId && typeId) {
-            device = await Device.findAll({where: {typeId}})
-        }
+        const type = await Model.findOne({ where: { id: id } })
 
-        if(motoId && !typeId) {
-            device = await Device.findAll({where: {motoId}})
+        if (type !== null) {
+            return res.json(type)
+        } else {
+            return next(ApiError.forbidden("Модель не найдена"))
         }
-
-        if(!motoId && !typeId) {
-            device = await Device.findAll()
-        }
-
-        return res.json(device)
     }
 
-    async create (req, res, next) {
+    async getAll(req, res, next) {
+        const type = await Model.findAll()
+
+        return res.json(type)
+    }
+
+    async create(req, res) {
+        const { name } = req.body;
+
+        const type = await Model.create({ name: name })
+
+        return res.json(type)
+    }
+
+    async update(req, res, next) {
+        const { id } = req.body
+        const { name } = req.body
+        const { disabled } = req.body
+
+        if (!id) return next(ApiError.badReq('Не задан id Модели'))
+
+        if (!name && disabled === undefined) return next(ApiError.badReq('Не задано имя либо статус'))
+
+        const type = await Model.update({ name: name, disabled: disabled }, { where: { id: id } })
+
+        if (type[0] === 1) {
+            return res.status(200).json({ message: 'Обновление Модели ' + id + ' прошло успешно' })
+        } else {
+            return res.status(404).json({ message: 'Модель ' + id + ' не найдено' })
+        }
+    }
+
+    async delete(req, res) {
         try {
-            const { model } = req.body;
-            // const { image } = req.files;
-            // const imgName = req.file.filename;
-            console.log('imgName :>> ', req.body);
-            console.log('file :>> ', req.file);
-            console.log('files :>> ', req.files);
+            const { id } = req.query
 
+            const type = await Model.destroy({ where: { id: id } })
 
-            // console.log('model :>> ', model);
-            // console.log('image :>> ', image);
-            // const imgName = uuid.v4() + '.jpg';
-            // const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
-            // image.mv(uploadPath);
-
-            // const device = await Device.create({
-            //     mark,
-            //     image: imgName
-            // })
-
-            // return res.json(device)
-        } catch (error) {
-            next(ApiError.badReq("$ERR: -->" + error.message))
+            if (type === 1) {
+                return res.status(200).json({ message: 'Удаление Модели ' + id + ' прошло успешно' })
+            } else {
+                return res.status(404).json({ message: 'Модель ' + id + ' не найдена' })
+            }
+        } catch(error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Произошла ошибка сервера при удалении записи.' });
         }
-    }
-
-    async update (req, res) {
-        const { name, price, image, typeId, motoId, info } = req.query
-
-    }
-
-    async delete (req, res) {
-        res.status(200).json({messg: "is working!"})
-
     }
 }
 

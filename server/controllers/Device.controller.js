@@ -5,7 +5,19 @@ const ApiError = require('../error/errorHandler');
 
 class DeviceController {
     async getOne (req, res) {
+        const { id } = req.params;
 
+        if (!id) {
+            return next(ApiError.badReq('Не задан id'))
+        }
+
+        const type = await Device.findOne({ where: { id: id } })
+
+        if (type !== null) {
+            return res.json(type)
+        } else {
+            return next(ApiError.forbidden("Запчасть не найдена"))
+        }
     }
     async getAll (req, res) {
         const { motoId, typeId } = req.body;
