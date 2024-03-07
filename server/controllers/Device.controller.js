@@ -1,10 +1,10 @@
-const {Device} = require('../models/models')
+const { Device } = require('../models/models')
 const uuid = require('uuid');
 const path = require('path');
 const ApiError = require('../error/errorHandler');
 
 class DeviceController {
-    async getOne (req, res) {
+    async getOne(req, res, next) {
         const { id } = req.params;
 
         if (!id) {
@@ -19,48 +19,101 @@ class DeviceController {
             return next(ApiError.forbidden("Запчасть не найдена"))
         }
     }
-    async getAll (req, res) {
+    async getAll(req, res) {
         const { motoId, typeId } = req.body;
         let device;
 
-        if(motoId && typeId) {
-            device = await Device.findAll({where: {motoId, typeId}})
+        if (motoId && typeId) {
+            device = await Device.findAll({ where: { motoId, typeId } })
         }
 
-        if(!motoId && typeId) {
-            device = await Device.findAll({where: {typeId}})
+        if (!motoId && typeId) {
+            device = await Device.findAll({ where: { typeId } })
         }
 
-        if(motoId && !typeId) {
-            device = await Device.findAll({where: {motoId}})
+        if (motoId && !typeId) {
+            device = await Device.findAll({ where: { motoId } })
         }
 
-        if(!motoId && !typeId) {
+        if (!motoId && !typeId) {
             device = await Device.findAll()
         }
 
         return res.json(device)
     }
 
-    async create (req, res, next) {
+    async create(req, res, next) {
         try {
-            const { name, price, typeId, motoId } = req.body;
-            const { images } = req.files;
+            const { name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
+            const images = req.files?.images;
             let photos = [];
+            console.log('images :>> ', images);
 
-            for(const img of images) {
+            // первый способ загружать картинки
+            // const filePaths = uploadedFiles.map(file => {
+            //     const fileName = file.name;
+            //     const filePath = `/uploads/${fileName}`;
+            //     file.mv(`./public${filePath}`); // Предполагается, что сервер имеет доступ к папке public
+            //     return filePath;
+            //   });
+
+            // второй способ загружать картинки
+            if (images && Array.isArray(images)) {
+                for (const img of images) {
+                    const imgName = uuid.v4() + '.jpg';
+                    const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
+
+                    img.mv(uploadPath);
+
+                    photos.push(uploadPath);
+                }
+            } else if (images) {
                 const imgName = uuid.v4() + '.jpg';
                 const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
-                img.mv(uploadPath);
+                images.mv(uploadPath);
 
                 photos.push(uploadPath);
             }
 
-            const device = await Device.create({
-                name, price, typeId, motoId,
+            // if (!name && disabled === undefined) return next(ApiError.badReq('Не задано имя либо статус'))
+            if (!motoId) return next(ApiError.badReq('Не задано марку мотоцикла'))
+            if (!typeId) return next(ApiError.badReq('Не задано тип детали'))
+            if (!price) return next(ApiError.badReq('Не задана цена детали'))
+
+            const deviceData = {
+                price: parseInt(price),
+                typeId: parseInt(typeId),
+                motoId: parseInt(motoId),
                 images: photos
-            })
+            };
+
+            if (modelId !== undefined && modelId !== null) {
+                deviceData.modelId = modelId
+            }
+
+            // Добавляем name, если передан
+            if (name !== undefined && name !== null) {
+                deviceData.name = name;
+            }
+
+            if (title !== undefined && title !== null) {
+                deviceData.title = title;
+            }
+
+            // Добавляем description, если передан
+            if (description !== undefined && description !== null) {
+                deviceData.description = description;
+            }
+
+            // Добавляем disabled, если передан
+            if (disabled !== undefined && disabled !== null) {
+                deviceData.disabled = disabled;
+            }
+
+            const device = await Device.create(deviceData);
+
+            // images: images ? photos : device.images
 
             return res.json(device)
         } catch (error) {
@@ -68,11 +121,107 @@ class DeviceController {
         }
     }
 
-    async update (req, res) {
-        const { name, price, image, typeId, motoId, info } = req.query
+    async update(req, res, next) {
+        try {
+            const { id, name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
+            const images = req.files?.images;
+            let photos = [];
+
+
+            if (!id) return next(ApiError.badReq('Не задано id запчасти'))
+
+
+            // второй способ загружать картинки
+            if (images && Array.isArray(images)) {
+                for (const img of images) {
+                    const imgName = uuid.v4() + '.jpg';
+                    const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
+
+                    img.mv(uploadPath);
+
+                    photos.push(uploadPath);
+                }
+            } else if (images) {
+                const imgName = uuid.v4() + '.jpg';
+                const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
+
+                images.mv(uploadPath);
+
+                photos.push(uploadPath);
+            }
+
+            const deviceData = {
+                id: id
+            };
+
+            if (name !== undefined && name !== null) {
+                deviceData.name = name;
+            }
+
+            if (price !== undefined && price !== null) {
+                deviceData.price = parseInt(price);
+            }
+
+            if (images !== undefined && images !== null) {
+                deviceData.images = photos;
+            }
+
+            if (motoId !== undefined && motoId !== null) {
+                deviceData.motoId = parseInt(motoId);
+            }
+
+            if (typeId !== undefined && typeId !== null) {
+                deviceData.typeId = parseInt(typeId);
+            }
+
+            if (modelId !== undefined && modelId !== null) {
+                deviceData.modelId = modelId
+            }
+
+            if (title !== undefined && title !== null) {
+                deviceData.title = title;
+            }
+
+            // Добавляем description, если передан
+            if (description !== undefined && description !== null) {
+                deviceData.description = description;
+            }
+
+            // Добавляем disabled, если передан
+            if (disabled !== undefined && disabled !== null) {
+                deviceData.disabled = disabled;
+            }
+
+            // images: images ? photos : device.images
+            const device = await Device.update(deviceData, { where: { id: id } })
+
+            console.log('device :>> ', device);
+            if (device[0] === 1) {
+                return res.status(200).json({ message: 'Обновление Детали ' + id + ' прошло успешно' })
+            } else {
+                return res.status(404).json({ message: 'Модель ' + id + ' не найдено' })
+            }
+
+        } catch (error) {
+            next(ApiError.badReq("$ERR: -->" + error.message)) // передаем сообщение, которое лежит в ошибке
+        }
     }
-    async delete (req, res) {
-        res.status(200).json({messg: "is working!"})
+
+    async delete(req, res) {
+        try {
+            const { id } = req.query
+
+            const type = await Device.destroy({ where: { id: id } })
+
+            if (type === 1) {
+                return res.status(200).json({ message: 'Удаление Детали ' + id + ' прошло успешно' })
+            } else {
+                return res.status(404).json({ message: 'Модель ' + id + ' не найдена' })
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Произошла ошибка сервера при удалении записи.' });
+        }
     }
 }
 

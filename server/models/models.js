@@ -24,11 +24,15 @@ const Type = sequelize.define('type', {
 
 const Device = sequelize.define('device', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    name: {type: DataTypes.STRING, allowNull: false},
-    price: {type: DataTypes.STRING, allowNull: false},
+    name: {type: DataTypes.STRING, allowNull: true},
+    price: {type: DataTypes.INTEGER, allowNull: false},
     images: {type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true},
     title: {type: DataTypes.STRING, allowNull: true},
     description: {type: DataTypes.STRING, allowNull: true},
+    typeId: {type: DataTypes.INTEGER, unique: false},
+    motoId: {type: DataTypes.INTEGER, unique: false},
+    modelId: {type: DataTypes.STRING},
+    disabled: {type: DataTypes.BOOLEAN, unique: false, defaultValue: false},
 })
 
 const Moto = sequelize.define('moto', {
@@ -40,7 +44,8 @@ const Moto = sequelize.define('moto', {
 const Model = sequelize.define('model', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     model: {type: DataTypes.STRING, allowNull: false},
-    disabled: {type: DataTypes.BOOLEAN, unique: false, defaultValue: false}
+    disabled: {type: DataTypes.BOOLEAN, unique: false, defaultValue: false},
+    motoId: {type: DataTypes.INTEGER, unique: false, allowNull: false}
 })
 
 const TypeAndMoto = sequelize.define('types_and_motos', {
@@ -75,5 +80,6 @@ module.exports = {
     Type,
     Moto,
     Device,
+    Model,
     TypeAndMoto,
 }

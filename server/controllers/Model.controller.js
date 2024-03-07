@@ -1,4 +1,4 @@
-const {Model} = require('../models/models')
+const { Model } = require('../models/models')
 const ApiError = require('../error/errorHandler');
 
 class ModelController {
@@ -25,23 +25,23 @@ class ModelController {
     }
 
     async create(req, res) {
-        const { name } = req.body;
+        const { model, motoId } = req.body;
 
-        const type = await Model.create({ name: name })
+        const type = await Model.create({ model, motoId })
 
         return res.json(type)
     }
 
     async update(req, res, next) {
         const { id } = req.body
-        const { name } = req.body
-        const { disabled } = req.body
+        const { model, motoId, disabled } = req.body
 
         if (!id) return next(ApiError.badReq('Не задан id Модели'))
 
-        if (!name && disabled === undefined) return next(ApiError.badReq('Не задано имя либо статус'))
+        if (!model && disabled === undefined) return next(ApiError.badReq('Не задано имя либо статус'))
 
-        const type = await Model.update({ name: name, disabled: disabled }, { where: { id: id } })
+        const type = await Model.update({ model, motoId, disabled }, { where: { id: id } })
+
 
         if (type[0] === 1) {
             return res.status(200).json({ message: 'Обновление Модели ' + id + ' прошло успешно' })
