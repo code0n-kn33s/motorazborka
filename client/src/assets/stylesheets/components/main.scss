@@ -1,0 +1,30 @@
+.main-nav__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 20px;
+}
+.main-nav__first-lvl {
+    display: flex;
+    align-items: center;
+    // justify-content: space-between;
+    gap: 10px;
+    list-style-type: none;
+    user-select: none;
+    .link {
+        padding: 5px;
+    }
+    .link.active {
+        color: $secondary-color;
+    }
+
+}
+.main-nav__first-lvl-item {
+
+}
+
+.main-nav-logo {
+    img {
+        height: 100px;
+    }
+}

@@ -1,6 +1,8 @@
 
-import Main from './pages/Main'
 
+import WrapPage from './pages/WrapPage'
+
+import MainPage from './pages/main'
 import RazborkaPage from './pages/razborka'
 import ContactsPage from './pages/contacts'
 import DetaliPage from './pages/detali'
@@ -11,7 +13,7 @@ import NotFound from './pages/NotFound'
 export const routes = [
   {
     path: "/",
-    element: <Main />,
+    element: <WrapPage />,
     children: [
       // {
       //   path: "private",
@@ -24,12 +26,12 @@ export const routes = [
       //   ]
       // },
       {
-        path: "razborka",
-        element: <RazborkaPage />,
+        path: "main",
+        element: <MainPage />,
       },
       {
-        path: "contacts",
-        element: <ContactsPage />,
+        path: "razborka",
+        element: <RazborkaPage />,
       },
       {
         path: "detali",
@@ -38,6 +40,10 @@ export const routes = [
       {
         path: "razhodniki",
         element: <RazhodnikiPage />,
+      },
+      {
+        path: "contacts",
+        element: <ContactsPage />,
       },
       // {
       //   path: "profile/kyc",

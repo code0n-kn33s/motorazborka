@@ -15,13 +15,13 @@ export default function Main() {
   const location = useLocation()
 
   React.useEffect(() => {
-    if (location.pathname === "/" && getToken() !== null) {
-      navigate('/profile')
-    }
+    // if (location.pathname === "/" && getToken() !== null) {
+    //   navigate('/profile')
+    // }
 
-    if (getToken() === null) {
-      navigate('/login')
-    }
+    // if (getToken() === null) {
+    //   navigate('/login')
+    // }
   }, [])
 
   return (
@@ -30,10 +30,8 @@ export default function Main() {
       <Header />
       <Tooltip />
 
-      <div className="page__body-wrapper">
-        <Aside />
-
-        <div className="page__sections-wrapper medium-wrapper">
+      <div className="body-wrapper">
+        <div className="sections-wrapper">
           <Outlet />
         </div>
       </div>
