@@ -26,14 +26,17 @@ export const CardElement = (props) => {
     }, 500);
   }
 
+  console.log('props :>> ', props);
+
   return (
     <Card
       hoverable
-      actions={[
+      actions={props.isLoggedIn ? [
         <EditOutlined onClick={props.handleEditDevice(props.id)} key="edit" />,
         <StopOutlined onClick={handleDelete(props.id)} key="setting" />,
-      ]}
+      ] : false}
 
+      // onTabClick={props.isLoggedIn ? tabClicked : props.sortProducts}
       style={{
         width: 240,
       }}

@@ -38,6 +38,7 @@ export const TabsElement = (props) => {
 
 
   const tabClicked = (id, e) => {
+
     if (id === 0) return
     setValueTab(props.types?.find(moto => moto.id === id).name)
     setModalContent(props.types?.find(moto => moto.id === id))
@@ -96,8 +97,8 @@ export const TabsElement = (props) => {
       <Tabs
         defaultActiveKey={false}
         items={items}
-        type={props.isSuperUser ? "editable-card" : false}
-        onTabClick={props.isSuperUser ? tabClicked : () => { return }}
+        type={props.isLoggedIn ? "editable-card" : false}
+        onTabClick={props.isLoggedIn ? tabClicked : (id) => props.sortProducts('types', id)}
         onEdit={onTabChanged}
       />
     </>

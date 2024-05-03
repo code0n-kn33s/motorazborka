@@ -116,7 +116,6 @@ export const AsyncModalDevice = (props) => {
         setName(e.target.value)
     }
 
-    console.log('modalContent :>> ', modalContent);
     return (
         <>
             <Modal

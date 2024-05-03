@@ -1,28 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../elements/Header";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { ConfigProvider, theme } from 'antd';
 import Aside from "../elements/Aside";
 import Footer from '../elements/Footer';
-
+// import
 import { getToken } from '../helpers';
 import { useDispatch, useSelector } from "react-redux";
-import { closeTooltip, openTooltip } from "../toolkitReducers";
+import { closeTooltip, openTooltip, getUserData } from "../toolkitReducers";
 
 export default function Main() {
   const { fetching } = useSelector(state => state.state)
   const navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useDispatch()
+  const isLoggedIn = useSelector(state => state.auth.isAuth)
 
-  React.useEffect(() => {
-    // if (location.pathname === "/" && getToken() !== null) {
-    //   navigate('/profile')
-    // }
+  useEffect(() => {
+    if (getToken() !== null) {
+      dispatch(getUserData())
+    }
 
-    // if (getToken() === null) {
-    //   navigate('/login')
-    // }
-  }, [])
+    // isLoggedIn && navigate('/profile')
+  }, [isLoggedIn])
 
   return (
     <div className="page">

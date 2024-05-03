@@ -3,7 +3,7 @@ export function setToken(user) {
     const expires = new Date();
     expires.setDate(expires.getDate() + 999);
     document.cookie = `token=${user.token}; expires=${expires.toUTCString()}; path=/`;
-
+    localStorage.setItem("login", true)
     setStorage(user)
 }
 
@@ -55,8 +55,10 @@ export function privateFetch(url, options, exclude) {
         };
     }
 
+    console.log('getToken() :>> ', getToken());
     if (getToken()) {
         headers.Authorization = `Token ${getToken()}`;
+        console.log('inner headers :>> ', headers);
 
         return fetch(process.env.REACT_APP_API_URL + url, {
             ...options,

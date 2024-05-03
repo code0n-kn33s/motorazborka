@@ -6,7 +6,7 @@ export const deleteTypes = createAsyncThunk(
     'async/deleteTypes',
     async function (param, options) {
         console.log('param :>> ', param);
-        const response = await publicFetch('api/type/?id=' + param, {
+        const response = await privateFetch('api/type/?id=' + param, {
             method: "DELETE",
 
         })
@@ -22,7 +22,7 @@ export const deleteTypes = createAsyncThunk(
 export const deleteDevices = createAsyncThunk(
     'async/deleteDevices',
     async function (param, options) {
-        const response = await publicFetch('api/device/?id=' + param, {
+        const response = await privateFetch('api/device/?id=' + param, {
             method: "DELETE",
 
         })
@@ -37,7 +37,7 @@ export const deleteDevices = createAsyncThunk(
 export const deleteModels = createAsyncThunk(
     'async/deleteModels',
     async function (param, options) {
-        const response = await publicFetch('api/model/?id=' + param, {
+        const response = await privateFetch('api/model/?id=' + param, {
             method: "DELETE",
 
         })
@@ -54,7 +54,7 @@ export const deleteMotos = createAsyncThunk(
     'async/deleteMotos',
     async function (param, options) {
 
-        const response = await publicFetch('api/moto/?id=' + param, {
+        const response = await privateFetch('api/moto/?id=' + param, {
             method: "DELETE",
         }, true)
 

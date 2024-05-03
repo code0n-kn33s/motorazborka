@@ -23,6 +23,7 @@
 }
 
 .main-nav-logo {
+    display: flex;
     img {
         height: 50px;
     }
@@ -214,8 +215,10 @@
 }
 
 .detali-list-motos {
+    min-width: 300px;
     .ant-tabs {
-        flex-direction: column;
+        // flex-direction: column;
+        // min-width: 80px;
     }
     ul {
         display: flex;
@@ -371,4 +374,14 @@
             right: 10px;
         }
     }
+}
+
+.form-login {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form-button-modal {
+    width: 100px;
+
 }

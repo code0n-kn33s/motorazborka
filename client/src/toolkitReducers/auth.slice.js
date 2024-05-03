@@ -8,7 +8,7 @@ if(!lang) localStorage.setItem('lang', "en")
 export const getUserData = createAsyncThunk(
     'async/getUserData',
     async function (param, options) {
-            const response = await privateFetch('get_user_data/')
+            const response = await privateFetch('api/user/check')
             const data = await response.json()
 
             if (!response.ok) {
@@ -48,12 +48,13 @@ export const registerNewUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
     'async/loginUser',
     async function (param, options) {
-        const response = await fetch(process.env.REACT_APP_API_URL + 'login_user/', {
+        const response = await fetch(process.env.REACT_APP_API_URL + 'api/user/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                email: param.useLogin,
-                password: param.usePassword
+                email: param.login,
+                password: param.password,
+                role: 'admin',
             })
         })
 
@@ -75,6 +76,7 @@ const authSlice = createSlice({
         fething: false,
         registered: false,
         error: '',
+        authError: '',
         registerErrors: '',
         liq: false
         // liq: true
@@ -123,9 +125,6 @@ const authSlice = createSlice({
                 if (action.payload) {
                     state.user = action.payload
 
-                    if(action.payload.user.liquidated === true) {
-                        state.liq = true
-                    }
                 }
                 state.error = ''
                 state.registerErrors = ''
@@ -151,10 +150,12 @@ const authSlice = createSlice({
                     state.registerErrors = ''
 
                 }
+                console.log('action :>> ', action);
             })
             builder.addCase(loginUser.rejected, (state, action) => {
                 state.fething = "rejected"
-                state.error = action.error.message || action.error.stack
+                console.log('action :>> ', action);
+                state.authError = action.error.message && action.payload.message
             })
             builder.addCase(registerNewUser.pending, (state, action) => {
                 state.fething = "loading"

@@ -67,7 +67,6 @@ const VerticalTabs = (props) => {
 
     const clickTabInner = (id) => {
         props.setActiveMoto(props.motos?.find(moto => moto.id === id))
-        console.log('clickTabInner :>> ', id);
     }
 
     const tabs = props.motos?.map((moto, i) => {
@@ -91,6 +90,8 @@ const VerticalTabs = (props) => {
                     setActiveModel={props.setActiveModel}
                     isSuperUser={props.isSuperUser}
                     motoId={moto.id}
+                    isLoggedIn={props.isLoggedIn}
+                    sortProducts={props.sortProducts}
                 />
             )
         };
@@ -112,8 +113,8 @@ const VerticalTabs = (props) => {
             />
             <Tabs
                 tabPosition='left'
-                type={props.isSuperUser ? "editable-card" : false}
-                onTabClick={props.isSuperUser ? tabClicked : ()=>{return}}
+                type={props.isLoggedIn ? "editable-card" : false}
+                onTabClick={props.isLoggedIn ? tabClicked : (id) => props.sortProducts('moto', id)}
                 onEdit={onTabChanged}
                 items={tabs}
             />

@@ -1,4 +1,5 @@
-import { CarouselApp } from '../../library'
+
+// import { CarouselApp } from '../../library'
 import { Carousel } from 'antd';
 
 import img1 from '../../assets/images/sl1.png'
@@ -27,7 +28,7 @@ export default function Main(params) {
         <div>
             <div className="top-section">
                 <div className="top-left-s-left">
-                    <div className="top-left-s-title">
+                    <div className="top-left-s-title" >
                         THE BIKER
                     </div>
                     <div className="top-left-s-subtitle">

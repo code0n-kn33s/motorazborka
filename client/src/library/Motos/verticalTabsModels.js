@@ -98,8 +98,8 @@ const VerticalTabsModels = (props) => {
 
             <Tabs
                 tabPosition='left'
-                type={props.isSuperUser ? "editable-card" : false}
-                onTabClick={props.isSuperUser ? tabClicked : () => { return }}
+                type={props.isLoggedIn ? "editable-card" : false}
+                onTabClick={props.isLoggedIn ? tabClicked : (id) => props.sortProducts('models', id)}
                 onEdit={onTabChanged}
                 items={tabs}
             />
