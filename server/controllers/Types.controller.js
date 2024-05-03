@@ -42,7 +42,7 @@ class TypesController {
         return res.json(type)
     }
 
-    async create(req, res) {
+    async create(req, res, next) {
         const { name } = req.body;
 
         const type = await Type.create({ name: name })
@@ -50,7 +50,7 @@ class TypesController {
         return res.json(type)
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const { id } = req.query
 

@@ -19,7 +19,7 @@ class DeviceController {
             return next(ApiError.forbidden("Запчасть не найдена"))
         }
     }
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         const { motoId, typeId } = req.body;
         let device;
 
@@ -47,7 +47,6 @@ class DeviceController {
             const { name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
             const images = req.files?.images;
             let photos = [];
-            console.log('images :>> ', images);
 
             // первый способ загружать картинки
             // const filePaths = uploadedFiles.map(file => {
@@ -65,7 +64,7 @@ class DeviceController {
 
                     img.mv(uploadPath);
 
-                    photos.push(uploadPath);
+                    photos.push(imgName);
                 }
             } else if (images) {
                 const imgName = uuid.v4() + '.jpg';
@@ -73,7 +72,7 @@ class DeviceController {
 
                 images.mv(uploadPath);
 
-                photos.push(uploadPath);
+                photos.push(imgName);
             }
 
             // if (!name && disabled === undefined) return next(ApiError.badReq('Не задано имя либо статус'))
@@ -131,6 +130,7 @@ class DeviceController {
             if (!id) return next(ApiError.badReq('Не задано id запчасти'))
 
 
+            console.log('req.body.images :>> ', req.body.images);
             // второй способ загружать картинки
             if (images && Array.isArray(images)) {
                 for (const img of images) {
@@ -139,7 +139,7 @@ class DeviceController {
 
                     img.mv(uploadPath);
 
-                    photos.push(uploadPath);
+                    photos.push(imgName);
                 }
             } else if (images) {
                 const imgName = uuid.v4() + '.jpg';
@@ -147,7 +147,15 @@ class DeviceController {
 
                 images.mv(uploadPath);
 
-                photos.push(uploadPath);
+                photos.push(imgName);
+            }
+
+            if (req.body.images?.length && Array.isArray(req.body.images)) {
+                console.log('req.body.images.length :>> ', req.body.images.length);
+                // Если images - это строка, то это имя существующего файла
+                photos = [...photos, ...req.body.images];
+            } else if (req.body.images && typeof req.body.images === 'string') {
+                photos = [...photos, req.body.images];
             }
 
             const deviceData = {
@@ -162,7 +170,7 @@ class DeviceController {
                 deviceData.price = parseInt(price);
             }
 
-            if (images !== undefined && images !== null) {
+            if (photos !== undefined && photos !== null && photos.length) {
                 deviceData.images = photos;
             }
 
@@ -195,7 +203,6 @@ class DeviceController {
             // images: images ? photos : device.images
             const device = await Device.update(deviceData, { where: { id: id } })
 
-            console.log('device :>> ', device);
             if (device[0] === 1) {
                 return res.status(200).json({ message: 'Обновление Детали ' + id + ' прошло успешно' })
             } else {
@@ -207,7 +214,7 @@ class DeviceController {
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const { id } = req.query
 

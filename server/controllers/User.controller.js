@@ -1,11 +1,11 @@
 class UserController {
-    registration (req, res) {
+    registration (req, res, next) {
 
     }
-    login (req, res) {
+    login (req, res, next) {
 
     }
-    auth (req, res) {
+    auth (req, res, next) {
         res.status(200).json({messg: "is working!"})
     }
 }

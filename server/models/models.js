@@ -39,6 +39,7 @@ const Moto = sequelize.define('moto', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     mark: {type: DataTypes.STRING, allowNull: false},
     image: {type: DataTypes.STRING, allowNull: true},
+    // disabled: {type: DataTypes.BOOLEAN, unique: false, defaultValue: false},
 })
 
 const Model = sequelize.define('model', {

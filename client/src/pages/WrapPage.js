@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../elements/Header";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-
+import { ConfigProvider, theme } from 'antd';
 import Aside from "../elements/Aside";
 import Footer from '../elements/Footer';
 
@@ -26,16 +26,32 @@ export default function Main() {
 
   return (
     <div className="page">
-      {fetching === "loading" && <Spinner />}
-      <Header />
-      <Tooltip />
+      <ConfigProvider
+        theme={{
+          algorithm: theme.darkAlgorithm,
+          // algorithm: theme.compactAlgorithm,
+          token: {
+            fontFamily: "Roboto, Helvetica Neue",
+            // Seed Token
+            colorPrimary: '#dd7426',
+            borderRadius: 2,
+            colorPrimaryBgHover: '#FFA500',
+            // Alias Token
+            colorBgContainer: 'transparent',
+          },
+        }}
+      >
+        {fetching === "loading" && <Spinner />}
+        <Header />
+        <Tooltip />
 
-      <div className="body-wrapper">
-        <div className="sections-wrapper">
-          <Outlet />
+        <div className="body-wrapper">
+          <div className="sections-wrapper">
+            <Outlet />
+          </div>
         </div>
-      </div>
-      <Footer />
+        <Footer />
+      </ConfigProvider>
     </div>
   );
 }

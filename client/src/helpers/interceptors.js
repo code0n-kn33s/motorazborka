@@ -25,13 +25,30 @@ export function getToken() {
 }
 
 export function setStorage(user) {
-    for(let field in user){
+    for (let field in user) {
         localStorage.setItem(field, user[field])
     }
 }
 
-export function privateFetch (url, options, exclude) {
+export function publicFetch(url, options, exclude) {
     let headers = {}
+
+    if (!exclude) {
+        headers = {
+            'Content-Type': 'application/json',
+        };
+    }
+
+    return fetch(process.env.REACT_APP_API_URL + url, {
+        ...options,
+        headers,
+    });
+
+};
+
+export function privateFetch(url, options, exclude) {
+    let headers = {}
+    console.log('url :>> ', url);
     if (!exclude) {
         headers = {
             'Content-Type': 'application/json',
@@ -48,14 +65,14 @@ export function privateFetch (url, options, exclude) {
     }
 
 };
-export function clearToken (url, options) {
+export function clearToken(url, options) {
     const cookies = document.cookie.split(';');
 
     for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i];
-      const eqPos = cookie.indexOf('=');
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     }
 
     localStorage.clear();

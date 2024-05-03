@@ -1,11 +1,50 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { setToken, privateFetch, getToken, clearToken } from '../helpers'
+import { setToken, privateFetch, publicFetch, getToken, clearToken } from '../helpers'
 import moment from 'moment'
 
-export const getCurrencies = createAsyncThunk(
-    'async/getCurrencies',
+export const getTypes = createAsyncThunk(
+    'async/getTypes',
     async function (param, options) {
-        const response = await privateFetch('get_crypto_prices/')
+        const response = await publicFetch('api/type')
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
+export const getDevices = createAsyncThunk(
+    'async/getDevices',
+    async function (param, options) {
+        const response = await publicFetch('api/device')
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
+export const getModels = createAsyncThunk(
+    'async/getModels',
+    async function (param, options) {
+        const response = await publicFetch('api/model')
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
+export const getMotos = createAsyncThunk(
+    'async/getMotos',
+    async function (param, options) {
+        const response = await publicFetch('api/moto')
 
         const data = await response.json()
         if (!response.ok) {
@@ -34,14 +73,13 @@ export const getGlobalProfit = createAsyncThunk(
 const actionsSlice = createSlice({
     name: 'state',
     initialState: {
-        currencies: [
-            { value: 'usdt', name: "USDT", index: 0 },
-            { value: 'btc', name: "Bitcoin", index: 1 },
-            { value: 'eth', name: "Ethereum", index: 2 },
-        ],
         currenciesFetch: null,
         kissFields: null,
         isTooltip: false,
+        motos: null,
+        types: null,
+        devices: null,
+        models: null,
         error: ''
     },
     reducers: {
@@ -53,53 +91,84 @@ const actionsSlice = createSlice({
         },
         openTooltip: (state, action) => {
             state.isTooltip = true
+        },
+        clearData: (state) => {
+            state.currenciesFetch = null
+            state.kissFields = null
+            state.isTooltip = false
+            state.motos = null
+            state.types = null
+            state.devices = null
+            state.models = null
+            state.error = ''
         }
     },
     extraReducers: (builder) => {
-        //get getGlobalProfit
-        builder.addCase(getGlobalProfit.pending, (state, action) => {
+        //get getMotos
+        builder.addCase(getMotos.pending, (state, action) => {
             state.fething = "loading"
         })
-        builder.addCase(getGlobalProfit.fulfilled, (state, action) => {
-            state.fething = "fullfilled"
-
-            state.globalProfit = action.payload
-            state.error = ''
-        })
-        builder.addCase(getGlobalProfit.rejected, (state, action) => {
-            state.fething = "rejected"
-            state.error = action.payload
-        })
-
-        //get currencies
-        builder.addCase(getCurrencies.pending, (state, action) => {
-            state.fething = "loading"
-        })
-        builder.addCase(getCurrencies.fulfilled, (state, action) => {
+        builder.addCase(getMotos.fulfilled, (state, action) => {
             state.fething = "fullfilled"
 
             const { payload } = action;
 
-            const joinCurrencies = {
-                usdt: {
-                    name: "USDT",
-                    rate: payload.USDT
-                },
-                btc: {
-                    name: "BTC",
-                    rate: payload.BTC
-                },
-                eth: {
-                    name: "ETH",
-                    rate: payload.ETH
-                },
-            }
-
-            state.currenciesFetch = joinCurrencies
+            state.motos = payload
 
             state.error = ''
         })
-        builder.addCase(getCurrencies.rejected, (state, action) => {
+        builder.addCase(getMotos.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //get getModels
+        builder.addCase(getModels.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(getModels.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+
+            const { payload } = action;
+
+            state.models = payload
+
+            state.error = ''
+        })
+        builder.addCase(getModels.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //get tyupes
+        builder.addCase(getTypes.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(getTypes.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+
+            const { payload } = action;
+
+            state.types = payload
+
+            state.error = ''
+        })
+        builder.addCase(getTypes.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //get devices
+        builder.addCase(getDevices.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(getDevices.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+
+            const { payload } = action;
+
+            state.devices = payload
+
+            state.error = ''
+        })
+        builder.addCase(getDevices.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })
@@ -109,7 +178,8 @@ const actionsSlice = createSlice({
 export const {
     textTooltipClear,
     closeTooltip,
-    openTooltip
+    openTooltip,
+    clearData
 } = actionsSlice.actions
 
 export default actionsSlice.reducer;

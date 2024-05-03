@@ -4,7 +4,7 @@ const path = require('path');
 const ApiError = require('../error/errorHandler');
 
 class MotoController {
-    async getOne(req, res) {
+    async getOne(req, res, next) {
         const { id } = req.params;
 
         if (!id) {
@@ -21,7 +21,7 @@ class MotoController {
         }
     }
 
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         let device = await Moto.findAll()
 
         return res.json(device)
@@ -30,19 +30,25 @@ class MotoController {
     async create(req, res, next) {
         try {
             const { mark } = req.body;
-            const { image } = req.files;
-            console.log('>> image', image);
+            const image = req.files?.image;
 
-            const imgName = uuid.v4() + '.jpg';
-            const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
+            let device;
 
-            console.log('uploadPath :>> ', uploadPath);
-            image.mv(uploadPath);
+            if(image) {
+                const imgName = uuid.v4() + '.jpg';
+                const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
-            const device = await Moto.create({
-                mark,
-                image: imgName
-            })
+                image.mv(uploadPath);
+
+                device = await Moto.create({
+                    mark,
+                    image: imgName
+                })
+            } else {
+                device = await Moto.create({
+                    mark
+                })
+            }
 
             return res.json(device)
         } catch (error) {
@@ -50,28 +56,37 @@ class MotoController {
         }
     }
 
-    async update(req, res) {
+    async update(req, res, next) {
         const { id, mark } = req.body
 
-        if (!id) return next(ApiError.badReq('Не задан id Модели'))
+        if (!id) {
+            return next(ApiError.badReq('Не задан id Модели'))
+        }
 
         if (!mark) return next(ApiError.badReq('Не задано имя либо статус'))
 
-
         let imgName;
-
+        let updatedRowsCount;
         // Проверяем наличие изображения в запросе
         if (req.files && req.files.image) {
             imgName = uuid.v4() + '.jpg';
             const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
             req.files.image.mv(uploadPath);
+
+            updatedRowsCount = await Moto.update(
+               { mark, image: imgName },
+               { where: { id } }
+           );
+        } else {
+            updatedRowsCount = await Moto.update(
+               { mark },
+               { where: { id } }
+           );
+
         }
 
-        const updatedRowsCount = await Moto.update(
-            { mark, image: imgName || null }, // Если image не передан, не обновляем его
-            { where: { id } }
-        );
+
 
         if (updatedRowsCount !== null && updatedRowsCount[0] !== 0) {
             return res.status(200).json({ message: 'Обновление Модели ' + id + ' прошло успешно' })
@@ -80,7 +95,7 @@ class MotoController {
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const { id } = req.query
 

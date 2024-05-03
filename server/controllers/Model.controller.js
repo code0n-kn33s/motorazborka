@@ -24,7 +24,7 @@ class ModelController {
         return res.json(type)
     }
 
-    async create(req, res) {
+    async create(req, res, next) {
         const { model, motoId } = req.body;
 
         const type = await Model.create({ model, motoId })
@@ -50,7 +50,7 @@ class ModelController {
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const { id } = req.query
 
