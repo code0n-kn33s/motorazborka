@@ -26,9 +26,9 @@ export const editDevices = createAsyncThunk(
         const formData = new FormData();
 
         param.id && formData.append('id', param.id);
-        param.name && formData.append('name', param.name);
+        formData.append('name', param.name);
         param.price && formData.append('price', param.price);
-        param.title && formData.append('title', param.title);
+        formData.append('title', param.title);
 
         param.typeId && formData.append('typeId', param.typeId);
         param.motoId && formData.append('motoId', param.motoId);
@@ -36,14 +36,9 @@ export const editDevices = createAsyncThunk(
 
         // let images = param.images && param.images.length && param.images.map(img => typeof img === 'string' ? img : img.file)
         // formData.append('images', images);
-
-        console.log('param.images :>> ', param.images);
-
         // const allImages = [...existingImageNames, ...param.images?.map(img => img.file)].filter(Boolean);
 
-
         param.images?.forEach((img, index) => {
-
             return typeof img === 'string' ? formData.append('images', img) : formData.append(`images`, img.file);
         });
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { Card } from 'antd';
 
 import { CarouselApp } from './carousel';
@@ -18,6 +18,11 @@ export const CardElement = (props) => {
 
   const models = useSelector(({ state }) => state.models)
 
+  useEffect(() => {
+    // let filtred = props.models?.filter(m => (m.motoId === motoId))
+
+    // console.log('models:>> ', models);
+  }, [props.models])
   const handleDelete = (value)=> (event) => {
     dispatch(deleteDevices(value))
 
@@ -26,7 +31,13 @@ export const CardElement = (props) => {
     }, 500);
   }
 
-  console.log('props :>> ', props);
+  const getModelsArr = () => {
+    let values = props.sx?.find(moto => props.modelId.includes(String(moto.id)))
+    console.log('values :>> ', values)
+
+    // props.models?.map(model => model.id === modelId.)
+    return <>ttt</>
+  }
 
   return (
     <Card
@@ -47,6 +58,7 @@ export const CardElement = (props) => {
       }
     >
 
+      <Meta title={<>{props.autoTitle?.findType?.name} для <br/> {props.autoTitle?.findMoto?.mark}</>} description={getModelsArr()} />
       <Meta title={props.name} description={props.title} />
 
       <h3>{props.price} EUR</h3>

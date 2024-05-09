@@ -147,8 +147,8 @@ export const AsyncModalDevice = (props) => {
                             <div className="content-block-left">
 
                                 {/* text inputs */}
-                                <label className="input-label-item" label="Заголовок деталi" name="username" rules={[{ required: true }]}>
-                                    <span>Заголовок деталi <b style={{ color: 'red' }}>*</b></span><br />
+                                <label className="input-label-item" label="Заголовок деталi" name="username" >
+                                    <span>Заголовок деталi</span><br />
                                     <Input
                                         onChange={onChangeName}
                                         placeholder="Введiть заголовок"
@@ -234,8 +234,8 @@ export const AsyncModalDevice = (props) => {
                                     />
                                 </label>
 
-                                <label className="input-label-item" label="Виберiть моделi(за замовчуванням всi)" name="username" rules={[{ required: false }]}>
-                                    <span>Виберiть моделi(за замовчуванням всi) </span><br />
+                                <label className="input-label-item" label="Виберiть моделi" name="username" rules={[{ required: false }]}>
+                                    <span>Виберiть моделi </span><br />
 
                                     <CheckModels
                                         // models={selectedModels}

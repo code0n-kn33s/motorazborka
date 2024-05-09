@@ -88,7 +88,6 @@ const VerticalTabs = (props) => {
                 <VerticalTabsModels
                     models={props.models?.filter(model => model.motoId === moto.id)}
                     setActiveModel={props.setActiveModel}
-                    isSuperUser={props.isSuperUser}
                     motoId={moto.id}
                     isLoggedIn={props.isLoggedIn}
                     sortProducts={props.sortProducts}

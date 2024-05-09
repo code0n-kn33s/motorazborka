@@ -34,7 +34,7 @@ export const UploadElement = (props) => {
     </button>
   );
 
-  const handleFileChange = (event) => {
+  const handleFileChange1 = (event) => {
     const file = event.target.files[0];
 
     if (file) {
@@ -45,15 +45,25 @@ export const UploadElement = (props) => {
       isimages?.length ? setimages([...isimages, { file, imageUrl }]) : setimages([{ file, imageUrl }]);
     }
   };
+  const handleFileChange = (event) => {
+    // console.log('isimages :>> ', isimages);
+    // console.log('files :>> ', files);
+    const files = event.target.files; // Получаем все выбранные файлы
+    if (files && files.length > 0) {
+        // Преобразуем массив файлов в массив объектов { file, imageUrl }
+        const newImages = Array.from(files).map(file => ({
+            file,
+            imageUrl: URL.createObjectURL(file)
+        }));
+
+        // Если уже есть изображения, добавляем новые к текущему списку
+        setimages(prevImages => prevImages ? [...prevImages, ...newImages] : newImages);
+    }
+};
+
 
   const resetImg = (index) => {
-    // setImageTab(false)
-    // setImageUrl(null)
-
     setimages(isimages.filter((img, i) => index !== i))
-
-    console.log('index :>> ', index);
-    console.log('isimages :>> ', isimages);
   }
 
 
@@ -64,6 +74,7 @@ export const UploadElement = (props) => {
         id="file-input-2"
         name="id-card"
         onChange={handleFileChange}
+        multiple
       />
 
       <div className="file-preloader-nav">

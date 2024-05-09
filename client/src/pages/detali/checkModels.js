@@ -11,13 +11,10 @@ const CheckModels = (props) => {
   // const indeterminate = checkedList.length > 0 && checkedList.length < plainOptions.length;
 
   useEffect(() => {
-    console.log('motoId :>> ', motoId);
-
     let filtred = models?.filter(m => (m.motoId === motoId)).map(item => ({ label: item.model, value: item.id }))
     // let modls = props.models.filter(model => model.motoId === selectedMark)
     //     setSelectedModels(modls)
 
-    console.log('filtred :>> ', filtred);
     // let filtred = models.map(item => ({label: item.model, value: item.id}))
     // setCheckedList(modelsChecked)
     setOptions(filtred)
@@ -62,7 +59,7 @@ const CheckModels = (props) => {
 
       <br /> */}
 
-      {modelsChecked && <CheckboxGroup
+      {options && <CheckboxGroup
         options={options}
         // defaultValue={modelsChecked && modelsChecked.split(',').map(i => parseInt(i))}
         value={checkedList}

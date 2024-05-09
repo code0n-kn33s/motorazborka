@@ -2,6 +2,7 @@ const { Device } = require('../models/models')
 const uuid = require('uuid');
 const path = require('path');
 const ApiError = require('../error/errorHandler');
+const sharp = require('sharp');
 
 class DeviceController {
     async getOne(req, res, next) {
@@ -126,18 +127,17 @@ class DeviceController {
             const images = req.files?.images;
             let photos = [];
 
-
             if (!id) return next(ApiError.badReq('Не задано id запчасти'))
 
-
-            console.log('req.body.images :>> ', req.body.images);
-            // второй способ загружать картинки
             if (images && Array.isArray(images)) {
                 for (const img of images) {
                     const imgName = uuid.v4() + '.jpg';
                     const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
-                    img.mv(uploadPath);
+                    // Минифицируем изображение с помощью sharp
+                    await sharp(img.data)
+                        .resize({ width: 800 }) // Установите размеры, которые вам нужны
+                        .toFile(uploadPath);
 
                     photos.push(imgName);
                 }
@@ -145,7 +145,10 @@ class DeviceController {
                 const imgName = uuid.v4() + '.jpg';
                 const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
-                images.mv(uploadPath);
+                // Минифицируем изображение с помощью sharp
+                await sharp(images.data)
+                    .resize({ width: 800 }) // Установите размеры, которые вам нужны
+                    .toFile(uploadPath);
 
                 photos.push(imgName);
             }

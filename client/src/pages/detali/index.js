@@ -23,10 +23,8 @@ export default function DetailsPage(props) {
     const [editValueTab, setValueTab] = useState('');
     const [isImageTab, setImageTab] = useState(null);
     const [isNew, setIsNew] = useState(false);
-    const [isActiveIdDevice, setActiveIdDevice] = useState(false);
     const [filteredProducts, setFilteredProducts] = useState([]);
 
-    const [isSuperUser, setSuperUser] = useState(true)
     const [activeType, setActiveType] = useState(null)
     const [activeMoto, setActiveMoto] = useState(null)
     const [activeModel, setActiveModel] = useState(null)
@@ -65,49 +63,12 @@ export default function DetailsPage(props) {
         setIsNew(false)
     }
 
-    const sortProducts1 = (type, id) => {
-        let filteredDevices = [...devices]; // Создаем копию изначального массива устройств
-
-        if (type === "types") {
-            setActiveType(id);
-        } else if (type === "moto") {
-            setActiveMoto(id);
-        } else if (type === 'models') {
-            setActiveModel(id);
-        }
-
-        // Фильтрация по каждой сущности
-        if (type === "types") {
-            filteredDevices = id ? filteredDevices.filter(device => device.typeId === id) : filteredDevices;
-        } else if (type === "moto") {
-            filteredDevices = id ? filteredDevices.filter(device => device.motoId === id) : filteredDevices;
-        } else if (type === 'models') {
-            filteredDevices = id ? filteredDevices.filter(device => device.modelId === id) : filteredDevices;
-        }
-
-        // Пересечение результатов фильтрации для каждой сущности
-        const typeFilteredDevices = activeType ? devices.filter(device => device.typeId === activeType) : devices;
-        const motoFilteredDevices = activeMoto ? devices.filter(device => device.motoId === activeMoto) : devices;
-        const modelFilteredDevices = activeModel ? devices.filter(device => device.modelId === activeModel) : devices;
-
-        // Фильтрация устройств, которые удовлетворяют всем выбранным сущностям
-        filteredDevices = filteredDevices.filter(device =>
-            typeFilteredDevices.some(d => d.id === device.id) &&
-            motoFilteredDevices.some(d => d.id === device.id) &&
-            modelFilteredDevices.some(d => d.id === device.id)
-        );
-
-        console.log('type, id :>> ', type, id);
-        console.log('filteredDevices :>> ', filteredDevices);
-        return filteredDevices;
-    };
-
     useEffect(() => {
-        const sortedProducts = filterDevices()
-
-        setFilteredProducts(sortedProducts);
-
-    }, [activeType, activeMoto, activeModel]);
+        if (types || motos || models) {
+            const sortedProducts = filterDevices();
+            setFilteredProducts(sortedProducts);
+        }
+    }, [activeType, activeMoto, activeModel, types , motos , models]);
 
     const sortProducts = (type, id) => {
         // Обновляем выбранные тип, мотоцикл и модель
@@ -122,16 +83,13 @@ export default function DetailsPage(props) {
 
     // Функция для фильтрации устройств
     const filterDevices = () => {
-        console.log('activeType :>> ', activeType);
-        console.log('activeMoto :>> ', activeMoto);
-        console.log('activeModel :>> ', activeModel);
-
-        const isAnyFilterSelected = activeType !== null || activeMoto !== null || activeModel !== null;
+        const isAnyFilterSelected = activeType === null && activeMoto === null && activeModel === null;
 
         // Если ни один из параметров не выбран, возвращаем исходный массив устройств
-        if (!isAnyFilterSelected) {
+        if (isAnyFilterSelected) {
             return devices;
         }
+
         const filteredDevices = devices?.filter(device =>
             (!activeType || device.typeId === activeType) &&
             (!activeMoto || device.motoId === activeMoto)
@@ -152,7 +110,6 @@ export default function DetailsPage(props) {
             <div className="detali-list-types">
                 <ul>
                     <TabsElement
-                        isSuperUser={isSuperUser}
                         types={types}
                         setDetailType={setDetailType}
                         isLoggedIn={isLoggedIn}
@@ -165,7 +122,6 @@ export default function DetailsPage(props) {
                     <VerticalTabs
                         motos={motos}
                         models={models}
-                        isSuperUser={isSuperUser}
                         setActiveMoto={setActiveMoto}
                         setActiveModel={setActiveModel}
                         isLoggedIn={isLoggedIn}
@@ -209,30 +165,44 @@ export default function DetailsPage(props) {
                                     handleEditDevice={handleEditDevice}
                                     isLoggedIn={isLoggedIn}
                                     sortProducts={sortProducts}
+                                    autoTitle={{
+                                        findMoto: motos?.find(moto => device.motoId === moto.id),
+                                        findType: types?.find(moto => device.typeId === moto.id),
+                                        findModels: models?.filter(moto => device.modelId === moto.id)
+                                    }}
                                 />
                             </li>
                         ))
 
-                        :
-                        filteredProducts?.map(device => (
-                            <li key={device.id} className="device-item">
-                                <CardElement
-                                    images={device.images}
-                                    type={types?.find(type => type.id === device.typeId).name}
-                                    price={device.price}
-                                    title={device.title}
-                                    description={device.description}
-                                    name={device.name}
-                                    id={device.id}
-                                    disabled={device.disabled}
-                                    handleEditDevice={handleEditDevice}
-                                    isLoggedIn={isLoggedIn}
-                                    sortProducts={sortProducts}
-                                />
-                            </li>
-                        ))
+                            :
 
-                    }
+                            filteredProducts?.map(device => (
+                                <li key={device.id} className="device-item">
+                                    <CardElement
+                                        images={device.images}
+                                        type={types?.find(type => type.id === device.typeId).name}
+                                        price={device.price}
+                                        title={device.title}
+                                        description={device.description}
+                                        name={device.name}
+                                        id={device.id}
+                                        disabled={device.disabled}
+                                        handleEditDevice={handleEditDevice}
+                                        isLoggedIn={isLoggedIn}
+                                        sortProducts={sortProducts}
+                                        models={models}
+                                        autoTitle={{
+                                            findMoto: motos?.find(moto => device.motoId === moto.id),
+                                            findType: types?.find(moto => device.typeId === moto.id),
+                                            motos: motos,
+                                            modelId: device.modelId,
+                                            device: device
+                                        }}
+                                    />
+                                </li>
+                            ))
+
+                        }
                     </ul>
                 </div>
 
