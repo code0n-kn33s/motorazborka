@@ -1,12 +1,10 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('devices', 'modelId', {
+    await queryInterface.addColumn('models', 'yearId', {
       type: Sequelize.INTEGER,
       allowNull: true,
       references: {
-        model: 'models', // Ім'я таблиці Model
+        model: 'years', // Имя таблицы YearModel
         key: 'id'
       },
       onUpdate: 'CASCADE',
@@ -15,6 +13,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('devices', 'modelId');
+    await queryInterface.removeColumn('models', 'yearId');
   }
 };

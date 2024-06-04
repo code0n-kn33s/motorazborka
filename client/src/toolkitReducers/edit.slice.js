@@ -32,17 +32,58 @@ export const editDevices = createAsyncThunk(
 
         param.typeId && formData.append('typeId', param.typeId);
         param.motoId && formData.append('motoId', param.motoId);
-        param.modelId && formData.append('modelId', param.modelId);
 
-        // let images = param.images && param.images.length && param.images.map(img => typeof img === 'string' ? img : img.file)
-        // formData.append('images', images);
-        // const allImages = [...existingImageNames, ...param.images?.map(img => img.file)].filter(Boolean);
+        if (Array.isArray(param.modelId)) {
+            // Якщо так, додаємо кожен елемент масиву окремо
+            param.modelId.forEach(id => formData.append('modelId', id));
+        } else {
+            // Якщо modelId не є масивом, додаємо його як одиночний елемент
+            param.modelId && formData.append('modelId', param.modelId);
+        }
 
         param.images?.forEach((img, index) => {
             return typeof img === 'string' ? formData.append('images', img) : formData.append(`images`, img.file);
         });
 
         const response = await publicFetch('api/device', {
+            method: "PATCH",
+            body: formData
+        }, true)
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
+export const editRozborka = createAsyncThunk(
+    'async/editRozborka',
+    async function (param, options) {
+        const formData = new FormData();
+
+        param.id && formData.append('id', param.id);
+        formData.append('name', param.name);
+        param.price && formData.append('price', param.price);
+        formData.append('title', param.title);
+
+        param.typeId && formData.append('typeId', param.typeId);
+        param.motoId && formData.append('motoId', param.motoId);
+
+        if (Array.isArray(param.modelId)) {
+            // Якщо так, додаємо кожен елемент масиву окремо
+            param.modelId.forEach(id => formData.append('modelId', id));
+        } else {
+            // Якщо modelId не є масивом, додаємо його як одиночний елемент
+            param.modelId && formData.append('modelId', param.modelId);
+        }
+
+        param.images?.forEach((img, index) => {
+            return typeof img === 'string' ? formData.append('images', img) : formData.append(`images`, img.file);
+        });
+
+        const response = await publicFetch('api/rozborka', {
             method: "PATCH",
             body: formData
         }, true)
@@ -110,11 +151,6 @@ const editeSlice = createSlice({
         })
         builder.addCase(editMotos.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.motos = payload
-
             state.error = ''
         })
         builder.addCase(editMotos.rejected, (state, action) => {
@@ -127,11 +163,6 @@ const editeSlice = createSlice({
         })
         builder.addCase(editModels.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.models = payload
-
             state.error = ''
         })
         builder.addCase(editModels.rejected, (state, action) => {
@@ -144,14 +175,21 @@ const editeSlice = createSlice({
         })
         builder.addCase(editTypes.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.types = payload
-
             state.error = ''
         })
         builder.addCase(editTypes.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //edit rozborka
+        builder.addCase(editRozborka.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(editRozborka.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+            state.error = ''
+        })
+        builder.addCase(editRozborka.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })
@@ -161,11 +199,6 @@ const editeSlice = createSlice({
         })
         builder.addCase(editDevices.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.devices = payload
-
             state.error = ''
         })
         builder.addCase(editDevices.rejected, (state, action) => {

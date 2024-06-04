@@ -197,7 +197,9 @@ img[data-sizes] {
 		width: 90%;
 		margin: auto;
 
-
+    @include media-query($w1000) {
+      width: 95%;
+    }
 	}
 	.page__sections-wrapper {
 	  flex: 1;

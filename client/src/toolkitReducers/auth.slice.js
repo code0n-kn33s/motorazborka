@@ -117,7 +117,6 @@ const authSlice = createSlice({
             })
             builder.addCase(getUserData.fulfilled, (state, action) => {
                 state.fething = "fullfilled"
-                console.log(">> action.payload", action.payload)
 
                 action.payload && setStorage(action.payload?.user)
                 // /dashboard/get_crypto_prices/

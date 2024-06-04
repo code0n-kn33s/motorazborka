@@ -67,7 +67,6 @@ export const TabsElement = (props) => {
 
   const clickTabInner = (id) => {
     props.setActiveModel(props.types?.find(type => type.id === id))
-    console.log('clickTabInner :>> ', id);
   }
 
 

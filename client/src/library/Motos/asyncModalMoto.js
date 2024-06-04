@@ -73,6 +73,24 @@ export const AsyncModalMoto = (props) => {
 
     };
 
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                handleOk();
+            }
+        };
+
+        if (isOpen) {
+            window.addEventListener('keydown', handleKeyPress);
+        } else {
+            window.removeEventListener('keydown', handleKeyPress);
+        }
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [isOpen, handleOk]);
+
     const handleCancel = () => {
         setModalOpen(false);
         props.setImageTab(false)

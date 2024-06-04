@@ -23,6 +23,7 @@ export const CardElement = (props) => {
 
     // console.log('models:>> ', models);
   }, [props.models])
+
   const handleDelete = (value)=> (event) => {
     dispatch(deleteDevices(value))
 
@@ -32,15 +33,19 @@ export const CardElement = (props) => {
   }
 
   const getModelsArr = () => {
-    let values = props.sx?.find(moto => props.modelId.includes(String(moto.id)))
-    console.log('values :>> ', values)
-
-    // props.models?.map(model => model.id === modelId.)
-    return <>ttt</>
+    if (Array.isArray(props.modelId)) { // перевіряємо, чи props.modelId є масивом
+      let values = props.models?.filter(moto => props.modelId.includes(String(moto.id)))
+      let labels = values?.map(model => model.model).join(', ')
+      return <>{labels ? labels : ''}</>
+    } else {
+      return null; // або інша логіка, яка повідомить користувача про помилку
+    }
   }
+  
 
   return (
     <Card
+
       hoverable
       actions={props.isLoggedIn ? [
         <EditOutlined onClick={props.handleEditDevice(props.id)} key="edit" />,
@@ -48,9 +53,10 @@ export const CardElement = (props) => {
       ] : false}
 
       // onTabClick={props.isLoggedIn ? tabClicked : props.sortProducts}
-      style={{
-        width: 240,
-      }}
+      className={"card-style"}
+      // style={{
+      //   width: 240,
+      // }}
       cover={
         <CarouselApp
           images={props.images}

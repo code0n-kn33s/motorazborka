@@ -6,7 +6,7 @@ import MainPage from './pages/main'
 import RazborkaPage from './pages/razborka'
 import ContactsPage from './pages/contacts'
 import DetaliPage from './pages/detali'
-import RazhodnikiPage from './pages/razhodniki'
+import AboutPage from './pages/about'
 
 import NotFound from './pages/NotFound'
 
@@ -38,8 +38,8 @@ export const routes = [
         element: <DetaliPage />,
       },
       {
-        path: "razhodniki",
-        element: <RazhodnikiPage />,
+        path: "about",
+        element: <AboutPage />,
       },
       {
         path: "contacts",

@@ -9,6 +9,7 @@ const routes = require('./routes/index');
 const errorsMiddleware = require('./middleware/errorHandlingMiddleware');
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
+const RozborkaController = require('./controllers/Rozborka.controller');
 const DeviceController = require('./controllers/Device.controller');
 const MotoController = require('./controllers/Moto.controller')
 const ModelController = require('./controllers/Model.controller')
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 app.use(fileUpload());
 
+app.post('/api/rozborka/create', RozborkaController.create);
 app.post('/api/device/create', DeviceController.create);
 app.post('/api/moto/create', MotoController.create);
 

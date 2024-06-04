@@ -1,6 +1,6 @@
 //Colors
 $primary-color: #fffffe;
-$secondary-color: #dd7426;
+$secondary-color: #f08d42;
 $alternative-color: #000;
 $primary-hover-color: #FFA500;
 $primary-error-color: #FF0000;
@@ -67,6 +67,7 @@ $extra-large-up: 'extra-large-up';
 $widescreen: 'widescreen';
 $extra-widescreen: 'extra-widescreen';
 
+$w1500: 'w1500';
 $w1100: 'w1100';
 $w1050: 'w1050';
 $w1000: 'w1000';
@@ -87,6 +88,7 @@ $w320: 'w320';
 // The `$breakpoints` list is used to build our media queries.
 // You can use these in the media-query mixin.
 $breakpoints: (
+  $w1500 '(max-width: 1500px)',
   $w1100 '(max-width: 1100px)',
   $w1050 '(max-width: 1050px)',
   $w1000 '(max-width: 1000px)',
@@ -102,25 +104,4 @@ $breakpoints: (
   $w500 '(max-width: 500px)',
   $w450 '(max-width: 450px)',
   $w320 '(min-width: 320px) and (max-width: 400px)',
-
-
-
-        $extra-small '(max-width: #{$grid-extra-small - 1})',
-        $small '(max-width: #{$grid-medium - 1})',
-        $small-mid '(max-width: 560px)',
-        $small-up '(min-width: 669px) and (max-width: 767px)',
-        $medium '(min-width: #{$grid-medium}) and (max-width: #{$grid-large - 1})',
-        $medium-mid '(max-width: 900px)',
-        $w800 '(max-width: 800px)',
-        $w850 '(max-width: 850px)',
-        $medium-down '(max-width: #{$grid-large - 1})',
-        $medium-up '(min-width: #{$grid-medium})',
-        $large '(min-width: #{$grid-large}) and (max-width: #{$grid-extra-large - 1})',
-        $large-down '(max-width: #{$grid-extra-large - 1})',
-        $large-up '(min-width: #{$grid-large})',
-        $extra-large '(min-width: #{$grid-extra-large}) and (max-width: #{$grid-widescreen - 1})',
-        $extra-large-down '(max-width: #{$grid-widescreen - 1})',
-        $extra-large-up '(min-width: #{$grid-extra-large})',
-        $widescreen '(min-width: #{$grid-widescreen})',
-        $extra-widescreen '(min-width: #{$grid-extra-widescreen})'
-);
+); 

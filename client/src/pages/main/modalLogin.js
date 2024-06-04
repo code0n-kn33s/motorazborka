@@ -79,7 +79,7 @@ export const ModalLogin = (props) => {
                     </Button>
                     <br />
                     <div className="form-login">
-                        <div style={{ color: 'red' }}>{isError}</div>
+                        <div style={{ color: 'orange' }}>{isError}</div>
                         <label className="input-label-item" label="Заголовок деталi" name="username" rules={[{ required: true }]}>
                             <span>Логін <b style={{ color: 'red' }}>*</b></span><br />
                             <Input

@@ -28,6 +28,19 @@ export const getDevices = createAsyncThunk(
         return data
     }
 )
+export const getRozborka = createAsyncThunk(
+    'async/getRozborka',
+    async function (param, options) {
+        const response = await publicFetch('api/rozborka')
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
 export const getModels = createAsyncThunk(
     'async/getModels',
     async function (param, options) {
@@ -78,8 +91,9 @@ const actionsSlice = createSlice({
         isTooltip: false,
         motos: null,
         types: null,
-        devices: null,
-        models: null,
+        devices: [],
+        rozborka: [],
+        models: [],
         error: ''
     },
     reducers: {
@@ -152,6 +166,23 @@ const actionsSlice = createSlice({
             state.error = ''
         })
         builder.addCase(getTypes.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //get devices
+        builder.addCase(getRozborka.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(getRozborka.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+
+            const { payload } = action;
+
+            state.rozborka = payload
+
+            state.error = ''
+        })
+        builder.addCase(getRozborka.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })

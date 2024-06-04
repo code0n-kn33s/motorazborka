@@ -33,7 +33,7 @@ export default function Main() {
           token: {
             fontFamily: "Roboto, Helvetica Neue",
             // Seed Token
-            colorPrimary: '#dd7426',
+            colorPrimary: '#f08d42',
             borderRadius: 2,
             colorPrimaryBgHover: '#FFA500',
             // Alias Token

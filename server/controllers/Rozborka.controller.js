@@ -1,10 +1,10 @@
-const { Device } = require('../models/models')
+const { Rozborka } = require('../models/models')
 const uuid = require('uuid');
 const path = require('path');
 const ApiError = require('../error/errorHandler');
 const sharp = require('sharp');
 
-class DeviceController {
+class RozborkaController {
     async getOne(req, res, next) {
         const { id } = req.params;
 
@@ -12,7 +12,7 @@ class DeviceController {
             return next(ApiError.badReq('Не задан id'))
         }
 
-        const type = await Device.findOne({ where: { id: id } })
+        const type = await Rozborka.findOne({ where: { id: id } })
 
         if (type !== null) {
             return res.json(type)
@@ -25,19 +25,19 @@ class DeviceController {
         let device;
 
         if (motoId && typeId) {
-            device = await Device.findAll({ where: { motoId, typeId } })
+            device = await Rozborka.findAll({ where: { motoId, typeId } })
         }
 
         if (!motoId && typeId) {
-            device = await Device.findAll({ where: { typeId } })
+            device = await Rozborka.findAll({ where: { typeId } })
         }
 
         if (motoId && !typeId) {
-            device = await Device.findAll({ where: { motoId } })
+            device = await Rozborka.findAll({ where: { motoId } })
         }
 
         if (!motoId && !typeId) {
-            device = await Device.findAll()
+            device = await Rozborka.findAll()
         }
 
         return res.json(device)
@@ -49,10 +49,6 @@ class DeviceController {
             const images = req.files?.images;
             let photos = [];
 
-            console.log('*** req.body', req.body)
-   
-
-            // второй способ загружать картинки
             if (images && Array.isArray(images)) {
                 for (const img of images) {
                     const imgName = uuid.v4() + '.jpg';
@@ -60,7 +56,7 @@ class DeviceController {
 
                     img.mv(uploadPath);
 
-                    photos.push(imgName); 
+                    photos.push(imgName);
                 }
             } else if (images) {
                 const imgName = uuid.v4() + '.jpg';
@@ -73,7 +69,7 @@ class DeviceController {
 
             // if (!name && disabled === undefined) return next(ApiError.badReq('Не задано имя либо статус'))
             if (!motoId) return next(ApiError.badReq('Не задано марку мотоцикла'))
-            if (!typeId) return next(ApiError.badReq('Не задано тип детали'))
+            // if (!typeId) return next(ApiError.badReq('Не задано тип детали'))
             if (!price) return next(ApiError.badReq('Не задана цена детали'))
 
             const deviceData = {
@@ -83,18 +79,12 @@ class DeviceController {
                 images: photos
             };
 
-            let modelIds = [];
-            if (Array.isArray(modelId)) {
-              modelIds = modelId.map(id => String(id));
-            } else if (typeof modelId === 'string') {
-              modelIds.push(modelId);
-            } else {
-              modelIds = [];
+            if (modelId !== undefined && modelId !== null) {
+                deviceData.modelId = modelId
             }
-            deviceData.modelId = modelIds;        
 
             // Добавляем name, если передан
-            if (name !== undefined && name !== null) {
+            if (name !== undefined && name !== null) { 
                 deviceData.name = name;
             }
 
@@ -112,11 +102,9 @@ class DeviceController {
                 deviceData.disabled = disabled;
             }
 
-            const device = await Device.create(deviceData);
+            const device = await Rozborka.create(deviceData);
 
-            console.log('***deviceData', deviceData)
-
-            console.log('***device', device)
+            // images: images ? photos : device.images
 
             return res.json(device)
         } catch (error) {
@@ -129,8 +117,6 @@ class DeviceController {
             const { id, name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
             const images = req.files?.images;
             let photos = [];
-
-            console.log('*** req.body', req.body)
 
             if (!id) return next(ApiError.badReq('Не задано id запчасти'))
 
@@ -190,16 +176,9 @@ class DeviceController {
                 deviceData.typeId = parseInt(typeId);
             }
 
-            let modelIds = [];
-            if (Array.isArray(modelId)) {
-              modelIds = modelId.map(id => String(id));
-            } else if (typeof modelId === 'string') {
-              modelIds.push(modelId);
-            } else {
-              modelIds = [];
+            if (modelId !== undefined && modelId !== null) {
+                deviceData.modelId = modelId
             }
-            deviceData.modelId = modelIds;        
-            
 
             if (title !== undefined && title !== null) {
                 deviceData.title = title;
@@ -216,7 +195,7 @@ class DeviceController {
             }
 
             // images: images ? photos : device.images
-            const device = await Device.update(deviceData, { where: { id: id } })
+            const device = await Rozborka.update(deviceData, { where: { id: id } })
 
             if (device[0] === 1) {
                 return res.status(200).json({ message: 'Обновление Детали ' + id + ' прошло успешно' })
@@ -233,7 +212,7 @@ class DeviceController {
         try {
             const { id } = req.query
 
-            const type = await Device.destroy({ where: { id: id } })
+            const type = await Rozborka.destroy({ where: { id: id } })
 
             if (type === 1) {
                 return res.status(200).json({ message: 'Удаление Детали ' + id + ' прошло успешно' })
@@ -247,4 +226,4 @@ class DeviceController {
     }
 }
 
-module.exports = new DeviceController;
+module.exports = new RozborkaController;

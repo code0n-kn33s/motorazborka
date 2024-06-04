@@ -48,17 +48,14 @@ export function publicFetch(url, options, exclude) {
 
 export function privateFetch(url, options, exclude) {
     let headers = {}
-    console.log('url :>> ', url);
     if (!exclude) {
         headers = {
             'Content-Type': 'application/json',
         };
     }
 
-    console.log('getToken() :>> ', getToken());
     if (getToken()) {
         headers.Authorization = `Token ${getToken()}`;
-        console.log('inner headers :>> ', headers);
 
         return fetch(process.env.REACT_APP_API_URL + url, {
             ...options,

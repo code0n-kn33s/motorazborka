@@ -27,18 +27,61 @@ export const addDevices = createAsyncThunk(
         const formData = new FormData();
 
         param.name && formData.append('name', param.name);
-        param.price && formData.append('price', param.price);
+        param.price && formData.append('price', parseInt(param.price));
         param.title && formData.append('title', param.title);
 
-        param.typeId && formData.append('typeId', param.typeId);
-        param.motoId && formData.append('motoId', param.motoId);
-        param.modelId && formData.append('modelId', param.modelId);
+        param.typeId && formData.append('typeId', parseInt(param.typeId));
+        param.motoId && formData.append('motoId', parseInt(param.motoId));
+        if (Array.isArray(param.modelId)) {
+            // Якщо так, додаємо кожен елемент масиву окремо
+            param.modelId.forEach(id => formData.append('modelId', id));
+        } else {
+            // Якщо modelId не є масивом, додаємо його як одиночний елемент
+            param.modelId && formData.append('modelId', param.modelId);
+        }
 
         param.images?.forEach((img, index) => {
             formData.append(`images`, img.file);
         });
 
         const response = await publicFetch('api/device/create', {
+            method: "POST",
+            body: formData
+        }, true)
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
+export const addRasborka = createAsyncThunk(
+    'async/addRasborka',
+    async function (param, options) {
+
+        const formData = new FormData();
+
+        param.name && formData.append('name', param.name);
+        param.price && formData.append('price', parseInt(param.price));
+        param.title && formData.append('title', param.title);
+
+        param.typeId && formData.append('typeId', parseInt(param.typeId));
+        param.motoId && formData.append('motoId', parseInt(param.motoId));
+        if (Array.isArray(param.modelId)) {
+            // Якщо так, додаємо кожен елемент масиву окремо
+            param.modelId.forEach(id => formData.append('modelId', id));
+        } else {
+            // Якщо modelId не є масивом, додаємо його як одиночний елемент
+            param.modelId && formData.append('modelId', param.modelId);
+        }
+
+        param.images?.forEach((img, index) => {
+            formData.append(`images`, img.file);
+        });
+
+        const response = await publicFetch('api/rozborka/create', {
             method: "POST",
             body: formData
         }, true)
@@ -72,7 +115,7 @@ export const addModels = createAsyncThunk(
 export const addMotos = createAsyncThunk(
     'async/addMotos',
     async function (param, options) {
-        console.log('param :>> ', param);
+
 
         const formData = new FormData();
         formData.append('mark', param.mark);
@@ -107,10 +150,6 @@ const addedSlice = createSlice({
         builder.addCase(addMotos.fulfilled, (state, action) => {
             state.fething = "fullfilled"
 
-            const { payload } = action;
-
-            state.motos = payload
-
             state.error = ''
         })
         builder.addCase(addMotos.rejected, (state, action) => {
@@ -123,11 +162,6 @@ const addedSlice = createSlice({
         })
         builder.addCase(addModels.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.models = payload
-
             state.error = ''
         })
         builder.addCase(addModels.rejected, (state, action) => {
@@ -140,14 +174,21 @@ const addedSlice = createSlice({
         })
         builder.addCase(addTypes.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.types = payload
-
             state.error = ''
         })
         builder.addCase(addTypes.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //add rozborka
+        builder.addCase(addRasborka.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(addRasborka.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+            state.error = ''
+        })
+        builder.addCase(addRasborka.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })
@@ -157,11 +198,6 @@ const addedSlice = createSlice({
         })
         builder.addCase(addDevices.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.devices = payload
-
             state.error = ''
         })
         builder.addCase(addDevices.rejected, (state, action) => {

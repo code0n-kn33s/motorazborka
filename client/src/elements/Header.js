@@ -47,9 +47,9 @@ export default function Main(params) {
                     </NavLink>
                 </li>
                 <li className="main-nav__first-lvl-item">
-                    <NavLink className="link" to="razhodniki">
+                    <NavLink className="link" to="about">
                         <span>
-                            Рoзхідники
+                            Про нас
                         </span>
                     </NavLink>
                 </li>

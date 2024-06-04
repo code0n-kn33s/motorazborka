@@ -34,6 +34,21 @@ export const deleteDevices = createAsyncThunk(
         return data
     }
 )
+export const deleteRozborka = createAsyncThunk(
+    'async/deleteRozborka',
+    async function (param, options) {
+        const response = await privateFetch('api/rozborka/?id=' + param, {
+            method: "DELETE",
+
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
 export const deleteModels = createAsyncThunk(
     'async/deleteModels',
     async function (param, options) {
@@ -81,11 +96,6 @@ const deleteSlice = createSlice({
         })
         builder.addCase(deleteMotos.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.motos = payload
-
             state.error = ''
         })
         builder.addCase(deleteMotos.rejected, (state, action) => {
@@ -98,11 +108,6 @@ const deleteSlice = createSlice({
         })
         builder.addCase(deleteModels.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.models = payload
-
             state.error = ''
         })
         builder.addCase(deleteModels.rejected, (state, action) => {
@@ -115,14 +120,21 @@ const deleteSlice = createSlice({
         })
         builder.addCase(deleteTypes.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.types = payload
-
             state.error = ''
         })
         builder.addCase(deleteTypes.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //delete rozborka
+        builder.addCase(deleteRozborka.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(deleteRozborka.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+            state.error = ''
+        })
+        builder.addCase(deleteRozborka.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })
@@ -132,11 +144,6 @@ const deleteSlice = createSlice({
         })
         builder.addCase(deleteDevices.fulfilled, (state, action) => {
             state.fething = "fullfilled"
-
-            const { payload } = action;
-
-            state.devices = payload
-
             state.error = ''
         })
         builder.addCase(deleteDevices.rejected, (state, action) => {
