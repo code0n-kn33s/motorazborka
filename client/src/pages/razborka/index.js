@@ -38,12 +38,6 @@ export default function DetailsPage(props) {
   const devices = useSelector(({ state }) => state.rozborka);
   const years = useSelector(({ state }) => state.years);
 
-  // console.log('*** motos', motos)
-  // console.log('*** types', types)
-  // console.log('*** models', models)
-  // console.log('*** devices', devices)
-  // console.log('*** years', years)
-
   const isLoggedIn = useSelector((state) => state.auth.isAuth);
 
   const dispatch = useDispatch();

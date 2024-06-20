@@ -4,6 +4,7 @@ import { Menu } from 'antd';
 
 const SelectDetails = ({ motos, types, models, devices, years }) => {
   const [menuItems, setMenuItems] = useState([]);
+  const [openKeys, setOpenKeys] = useState([]);
 
   useEffect(() => {
     const items = types?.map(type => {
@@ -52,6 +53,7 @@ const SelectDetails = ({ motos, types, models, devices, years }) => {
   }, [motos, types, models, devices, years]);
 
   const handleMenuClick = (e) => {
+    setOpenKeys([]); // Закрываем все подменю при клике на любой элемент
     console.log('Menu item clicked:', e.key);
   };
 
@@ -72,6 +74,8 @@ const SelectDetails = ({ motos, types, models, devices, years }) => {
     <Menu
       mode="vertical"
       selectable
+      openKeys={openKeys}
+      onOpenChange={setOpenKeys}
     >
       {renderMenuItems(menuItems)}
     </Menu>
