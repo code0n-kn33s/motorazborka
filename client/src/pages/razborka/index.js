@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import SelectDetails from "./SelectDetails";
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   getTypes,
-  getRozborka,
+  getDevices,
   getModels,
   getMotos,
   clearData,
+  getYears,
+  getRozborka,
 } from "../../toolkitReducers";
 
-import { TabsElement, VerticalTabs, CardElement } from "../../library";
-
+import { TabsElement, VerticalTabs, CardRozborka } from "../../library";
+import SelectDetails from "./SelectDetails";
 import { AsyncModalDevice } from "./asyncModalDevice";
 
 import { Space, Avatar } from "antd";
@@ -36,6 +36,13 @@ export default function DetailsPage(props) {
   const types = useSelector(({ state }) => state.types);
   const models = useSelector(({ state }) => state.models);
   const devices = useSelector(({ state }) => state.rozborka);
+  const years = useSelector(({ state }) => state.years);
+
+  // console.log('*** motos', motos)
+  // console.log('*** types', types)
+  // console.log('*** models', models)
+  // console.log('*** devices', devices)
+  // console.log('*** years', years)
 
   const isLoggedIn = useSelector((state) => state.auth.isAuth);
 
@@ -46,6 +53,7 @@ export default function DetailsPage(props) {
     dispatch(getRozborka());
     dispatch(getModels());
     dispatch(getMotos());
+    dispatch(getYears());
 
     return () => dispatch(clearData());
   }, []);
@@ -102,33 +110,30 @@ export default function DetailsPage(props) {
     return filteredDevices;
   };
 
+  const getProductsToRender = () => {
+    return isLoggedIn ? devices : filteredProducts;
+  };
+
+  const sortedProducts = [...(getProductsToRender() || [])].sort(
+    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+  );
+
   return (
     <>
       <div className="detali-top">
         <img src={moto} alt="" />
       </div>
-      <div className="detali-title">Деталі для мотоциклів</div>
-      <div className="detali-list-types">
-        {/* <ul>
-          <TabsElement
-            types={types}
-            setDetailType={setDetailType}
-            isLoggedIn={isLoggedIn}
-            sortProducts={sortProducts}
-          />
-        </ul> */}
-      </div>
+      <div className="detali-title">Деталі з розборки</div>
+
       <div className="detali-content-wrap">
         <div className="detali-list-motos">
-          {/* <VerticalTabs
+          <SelectDetails 
             motos={motos}
+            types={types}
             models={models}
-            setActiveMoto={setActiveMoto}
-            setActiveModel={setActiveModel}
-            isLoggedIn={isLoggedIn}
-            sortProducts={sortProducts}
-          /> */}
-          <SelectDetails/>
+            devices={devices}
+            years={years}
+          />
         </div>
         <div className="detali-content-items">
           <ul className="device-content">
@@ -159,73 +164,39 @@ export default function DetailsPage(props) {
               models={models}
             />
 
-            {isLoggedIn
-              ? devices?.map((device) => (
-                  <li key={device.id} className="device-item">
-                    <CardElement
-                      images={device.images}
-                      type={
-                        types?.find((type) => type.id === device.typeId).name
-                      }
-                      price={device.price}
-                      title={device.title}
-                      description={device.description}
-                      name={device.name}
-                      id={device.id}
-                      disabled={device.disabled}
-                      handleEditDevice={handleEditDevice}
-                      motoId={device.motoId}
-                      isLoggedIn={isLoggedIn}
-                      sortProducts={sortProducts}
-                      models={models}
-                      modelId={device.modelId}
-                      autoTitle={{
-                        findMoto: motos?.find(
-                          (moto) => device.motoId === moto.id
-                        ),
-                        findType: types?.find(
-                          (moto) => device.typeId === moto.id
-                        ),
-                        findModels: models?.filter(
-                          (moto) => device.modelId === moto.id
-                        ),
-                      }}
-                    />
-                  </li>
-                )).sort((a, b) => b.updatedAt - a.updatedAt)
-              : filteredProducts?.map((device) => (
-                  <li key={device.id} className="device-item">
-                    <CardElement
-                      images={device.images}
-                      type={
-                        types?.find((type) => type.id === device.typeId).name
-                      }
-                      price={device.price}
-                      title={device.title}
-                      description={device.description}
-                      name={device.name}
-                      id={device.id}
-                      motoId={device.motoId}
-                      disabled={device.disabled}
-                      handleEditDevice={handleEditDevice}
-                      isLoggedIn={isLoggedIn}
-                      sortProducts={sortProducts}
-                      models={models}
-                      modelId={device.modelId}
-                      autoTitle={{
-                        findMoto: motos?.find(
-                          (moto) => device.motoId === moto.id
-                        ),
-                        findType: types?.find(
-                          (moto) => device.typeId === moto.id
-                        ),
-                        motos: motos,
-                        modelId: device.modelId,
-                        device: device,
-                      }}
-                    />
-                  </li>
-                )).sort((a, b) => b.updatedAt - a.updatedAt)}
+            {sortedProducts?.map((device) => (
+              <li key={device.id} className="device-item">
+                <CardRozborka
+                  images={device.images}
+                  type={types?.find((type) => type.id === device.typeId)?.name}
+                  price={device.price}
+                  title={device.title}
+                  description={device.description}
+                  name={device.name}
+                  id={device.id}
+                  motoId={device.motoId}
+                  disabled={device.disabled}
+                  handleEditDevice={handleEditDevice}
+                  isLoggedIn={isLoggedIn}
+                  sortProducts={sortProducts}
+                  models={models}
+                  modelId={device.modelId}
+                  yearId={device.yearId}
+                  yearsArray={years}
+                  autoTitle={{
+                    findMoto: motos?.find((moto) => device.motoId === moto.id),
+                    findType: types?.find((type) => device.typeId === type.id),
+                    // findYear: years?.find((years) => device.typeId === years.id),
+                    findModels: models?.filter(
+                      (moto) => device.modelId === moto.id
+                    ),
+                    motos: motos,
+                    modelId: device.modelId,
+                    device: device,
+                  }}
+                />
+              </li>
+            ))}
           </ul>
         </div>
       </div>

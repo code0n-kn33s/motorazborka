@@ -36,7 +36,7 @@ export const CardElement = (props) => {
     if (Array.isArray(props.modelId)) { // перевіряємо, чи props.modelId є масивом
       let values = props.models?.filter(moto => props.modelId.includes(String(moto.id)))
       let labels = values?.map(model => model.model).join(', ')
-      return <>{labels ? labels : ''}</>
+      return <>Моделі: {labels ? labels : ''}</>
     } else {
       return null; // або інша логіка, яка повідомить користувача про помилку
     }
@@ -45,7 +45,6 @@ export const CardElement = (props) => {
 
   return (
     <Card
-
       hoverable
       actions={props.isLoggedIn ? [
         <EditOutlined onClick={props.handleEditDevice(props.id)} key="edit" />,
@@ -54,9 +53,6 @@ export const CardElement = (props) => {
 
       // onTabClick={props.isLoggedIn ? tabClicked : props.sortProducts}
       className={"card-style"}
-      // style={{
-      //   width: 240,
-      // }}
       cover={
         <CarouselApp
           images={props.images}

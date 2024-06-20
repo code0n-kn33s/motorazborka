@@ -1,56 +1,81 @@
-import React from 'react';
-import { AppstoreOutlined, ContainerOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { AppstoreOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 
-const items = [
-  {
-    key: '0',
-    icon: <ContainerOutlined />,
-    label: 'Всі',
-  },
-  {
-    key: 'sub2',
-    icon: <AppstoreOutlined />,
-    label: 'Navigation Two',
-    children: [
-      {
-        key: '5',
-        label: 'Option 5',
-      },
-      {
-        key: '6',
-        label: 'Option 6',
-      },
-      {
-        key: 'sub3',
-        label: 'Submenu',
-        children: [
-          {
-            key: '7',
-            label: 'Option 7',
-          },
-          {
-            key: '8',
-            label: 'Option 8',
-          },
-        ],
-      },
-    ],
-  },
- 
-];
-const onClick = (e) => {
-  console.log('click', e);
+const SelectDetails = ({ motos, types, models, devices, years }) => {
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const items = types?.map(type => {
+      const marks = motos?.filter(moto => devices?.some(device => device.typeId === type.id && device.motoId === moto.id));
+      console.log('Marks for type', type.name, marks);
+
+      const markItems = marks?.map(moto => {
+        const modelItems = models?.filter(model => 
+          model.motoId === moto.id && 
+          devices?.some(device => device.modelId?.includes(String(model.id)) && device.typeId === type.id)
+        );
+        console.log('Models for moto', moto.mark, modelItems);
+
+        const modelItemList = modelItems?.map(model => {
+          const yearItems = years?.filter(year => 
+            devices?.some(device => device.modelId?.includes(String(model.id)) && device.yearId?.includes(String(year.id)))
+          );
+          console.log('Years for model', model.model, yearItems);
+
+          return {
+            key: `model-${model.id}`,
+            label: model.model,
+            children: yearItems?.length > 0 ? yearItems.map(year => ({
+              key: `year-${year.id}`,
+              label: year.years
+            })) : [],
+          };
+        })?.filter(item => item.children?.length > 0 || item.label); // Удаляем модели без доступных годов
+
+        return {
+          key: `moto-${moto.id}`,
+          label: moto.mark,
+          children: modelItemList?.length > 0 ? modelItemList : [],
+        };
+      })?.filter(item => item.children?.length > 0 || item.label); // Удаляем марки без доступных моделей
+
+      return {
+        key: `type-${type.id}`,
+        icon: <AppstoreOutlined />,
+        label: type.name,
+        children: markItems?.length > 0 ? markItems : [],
+      };
+    })?.filter(item => item.children?.length > 0 || item.label); // Удаляем типы без доступных марок
+
+    setMenuItems(items);
+  }, [motos, types, models, devices, years]);
+
+  const handleMenuClick = (e) => {
+    console.log('Menu item clicked:', e.key);
+  };
+
+  const renderMenuItems = (items) => {
+    return items?.map(item => {
+      if (item.children && item.children.length > 0) {
+        return (
+          <Menu.SubMenu key={item.key} icon={item.icon} title={item.label} onTitleClick={handleMenuClick}>
+            {renderMenuItems(item.children)}
+          </Menu.SubMenu>
+        );
+      }
+      return <Menu.Item key={item.key} onClick={handleMenuClick}>{item.label}</Menu.Item>;
+    });
+  };
+
+  return (
+    <Menu
+      mode="vertical"
+      selectable
+    >
+      {renderMenuItems(menuItems)}
+    </Menu>
+  );
 };
 
-const SelectDetails = () => (
-  <Menu
-    onClick={onClick}
-    style={{
-      width: 256,
-    }}
-    mode="vertical"
-    items={items}
-  />
-);
 export default SelectDetails;

@@ -63,7 +63,7 @@ export const UploadElement = (props) => {
 
 
   const resetImg = (index) => {
-    setimages(isimages.filter((img, i) => index !== i))
+    setimages(isimages?.filter((img, i) => index !== i))
   }
 
 

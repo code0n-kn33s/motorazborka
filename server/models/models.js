@@ -43,8 +43,8 @@ const Rozborka = sequelize.define("rozborka", {
   title: { type: DataTypes.STRING, allowNull: true },
   description: { type: DataTypes.STRING, allowNull: true },
   motoId: { type: DataTypes.INTEGER, unique: false },
-  modelId: { type: DataTypes.STRING },
-  yearId: { type: DataTypes.STRING, unique: false },
+  modelId: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+  yearId: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
   typeId: { type: DataTypes.INTEGER, unique: false },
   disabled: { type: DataTypes.BOOLEAN, unique: false, defaultValue: false },
 });

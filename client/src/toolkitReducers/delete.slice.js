@@ -65,6 +65,22 @@ export const deleteModels = createAsyncThunk(
         return data
     }
 )
+export const deleteYears = createAsyncThunk(
+    'async/deleteYears',
+    async function (param, options) {
+        const response = await privateFetch('api/years/?id=' + param, {
+            method: "DELETE",
+
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
 export const deleteMotos = createAsyncThunk(
     'async/deleteMotos',
     async function (param, options) {
@@ -99,6 +115,18 @@ const deleteSlice = createSlice({
             state.error = ''
         })
         builder.addCase(deleteMotos.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //delete deleteYears
+        builder.addCase(deleteYears.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(deleteYears.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+            state.error = ''
+        })
+        builder.addCase(deleteYears.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })

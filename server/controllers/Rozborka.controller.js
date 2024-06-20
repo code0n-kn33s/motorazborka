@@ -3,6 +3,7 @@ const uuid = require('uuid');
 const path = require('path');
 const ApiError = require('../error/errorHandler');
 const sharp = require('sharp');
+const { log } = require('console');
 
 class RozborkaController {
     async getOne(req, res, next) {
@@ -45,7 +46,7 @@ class RozborkaController {
 
     async create(req, res, next) {
         try {
-            const { name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
+            const { name, price, typeId, motoId, modelId, yearId, title, description, disabled } = req.body;
             const images = req.files?.images;
             let photos = [];
 
@@ -79,9 +80,25 @@ class RozborkaController {
                 images: photos
             };
 
-            if (modelId !== undefined && modelId !== null) {
-                deviceData.modelId = modelId
+            let modelIds = [];
+            if (Array.isArray(modelId)) {
+              modelIds = modelId.map(id => String(id));
+            } else if (typeof modelId === 'string') {
+              modelIds.push(modelId);
+            } else {
+              modelIds = [];
             }
+            deviceData.modelId = modelIds;    
+
+            let yearIds = [];
+            if (Array.isArray(yearId)) {
+              yearIds = yearId.map(id => String(id));
+            } else if (typeof yearId === 'string') {
+              yearIds.push(yearId);
+            } else {
+              yearIds = [];
+            }
+            deviceData.yearId = yearIds;    
 
             // Добавляем name, если передан
             if (name !== undefined && name !== null) { 
@@ -104,6 +121,7 @@ class RozborkaController {
 
             const device = await Rozborka.create(deviceData);
 
+            console.log('^^^ device', device)
             // images: images ? photos : device.images
 
             return res.json(device)
@@ -114,7 +132,7 @@ class RozborkaController {
 
     async update(req, res, next) {
         try {
-            const { id, name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
+            const { id, name, price, typeId, motoId, modelId, yearId, title, description, disabled } = req.body;
             const images = req.files?.images;
             let photos = [];
 
@@ -176,9 +194,26 @@ class RozborkaController {
                 deviceData.typeId = parseInt(typeId);
             }
 
-            if (modelId !== undefined && modelId !== null) {
-                deviceData.modelId = modelId
+            let modelIds = [];
+            if (Array.isArray(modelId)) {
+              modelIds = modelId.map(id => String(id));
+            } else if (typeof modelId === 'string') {
+              modelIds.push(modelId);
+            } else { 
+              modelIds = [];
             }
+            deviceData.modelId = modelIds;    
+
+            let yearIds = [];
+            if (Array.isArray(yearId)) {
+              yearIds = yearId.map(id => String(id));
+            } else if (typeof yearId === 'string') {
+              yearIds.push(yearId);
+            } else {
+              yearIds = [];
+            }
+            deviceData.yearId = yearIds;    
+
 
             if (title !== undefined && title !== null) {
                 deviceData.title = title;
@@ -193,8 +228,8 @@ class RozborkaController {
             if (disabled !== undefined && disabled !== null) {
                 deviceData.disabled = disabled;
             }
-
             // images: images ? photos : device.images
+            console.log('^^^ deviceData', deviceData)
             const device = await Rozborka.update(deviceData, { where: { id: id } })
 
             if (device[0] === 1) {

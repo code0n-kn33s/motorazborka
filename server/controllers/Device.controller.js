@@ -61,7 +61,7 @@ class DeviceController {
                     img.mv(uploadPath);
 
                     photos.push(imgName); 
-                }
+                }  
             } else if (images) {
                 const imgName = uuid.v4() + '.jpg';
                 const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
@@ -83,7 +83,7 @@ class DeviceController {
                 images: photos
             };
 
-            let modelIds = [];
+            let modelIds = []; 
             if (Array.isArray(modelId)) {
               modelIds = modelId.map(id => String(id));
             } else if (typeof modelId === 'string') {
@@ -129,7 +129,7 @@ class DeviceController {
             const { id, name, price, typeId, motoId, modelId, title, description, disabled } = req.body;
             const images = req.files?.images;
             let photos = [];
-
+ 
             console.log('*** req.body', req.body)
 
             if (!id) return next(ApiError.badReq('Не задано id запчасти'))

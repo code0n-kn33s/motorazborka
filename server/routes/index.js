@@ -13,7 +13,7 @@ router.use('/type', typeRouter);
 router.use('/device', deviceRouter);
 router.use('/moto', motoRouter);
 router.use('/model', modelRouter);
-router.use('/year', yearRouter);
+router.use('/years', yearRouter);
 router.use('/rozborka', rozborkaRouter);
 router.use('/user', userRouter);
 

@@ -79,6 +79,12 @@ export const editRozborka = createAsyncThunk(
             param.modelId && formData.append('modelId', param.modelId);
         }
 
+        if (Array.isArray(param.years)) {
+            param.years.forEach(year => formData.append('yearId', year));
+        } else {
+            param.years && formData.append('yearId', param.years);
+        }
+
         param.images?.forEach((img, index) => {
             return typeof img === 'string' ? formData.append('images', img) : formData.append(`images`, img.file);
         });

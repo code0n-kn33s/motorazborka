@@ -67,6 +67,19 @@ export const getMotos = createAsyncThunk(
         return data
     }
 )
+export const getYears = createAsyncThunk(
+    'async/getYears',
+    async function (param, options) {
+        const response = await publicFetch('api/years')
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
 
 export const getGlobalProfit = createAsyncThunk(
     'async/getGlobalProfit',
@@ -92,6 +105,7 @@ const actionsSlice = createSlice({
         motos: null,
         types: null,
         devices: [],
+        years: [],
         rozborka: [],
         models: [],
         error: ''
@@ -113,6 +127,7 @@ const actionsSlice = createSlice({
             state.motos = null
             state.types = null
             state.devices = null
+            state.years = null
             state.models = null
             state.error = ''
         }
@@ -132,6 +147,23 @@ const actionsSlice = createSlice({
             state.error = ''
         })
         builder.addCase(getMotos.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //get getYears
+        builder.addCase(getYears.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(getYears.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+
+            const { payload } = action;
+
+            state.years = payload
+
+            state.error = ''
+        })
+        builder.addCase(getYears.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })

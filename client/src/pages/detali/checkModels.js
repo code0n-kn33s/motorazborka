@@ -23,18 +23,17 @@ const CheckModels = (props) => {
   }, [motoId, models]);
 
   useEffect(() => {
-    console.log("modelsChecked", modelsChecked);
-    modelsChecked 
-      && modelsChecked.length 
-      && setCheckedList(modelsChecked.map(i => parseInt(i)));
+    if (typeof modelsChecked === Number) {
+      setCheckedList([modelsChecked]); 
+    } else if (Array.isArray(modelsChecked) && modelsChecked.length) {
+      setCheckedList(modelsChecked.map(i => parseInt(i)))
+    } else {
+      setCheckedList([]);
+    }
   }, [motoId, models]);
 
   const onChange = (list) => {
-    console.log('list', list)
-    
     setCheckedList(list);
-
-    console.log('modelsChecked', modelsChecked)
   };
 
   return (

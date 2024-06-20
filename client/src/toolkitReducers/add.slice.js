@@ -5,10 +5,11 @@ import moment from 'moment'
 export const addTypes = createAsyncThunk(
     'async/addTypes',
     async function (param, options) {
+        console.log('param', param)
         const response = await publicFetch('api/type', {
             method: "POST",
             body: JSON.stringify({
-                ...param
+                name: param
             })
         })
 
@@ -69,12 +70,17 @@ export const addRasborka = createAsyncThunk(
 
         param.typeId && formData.append('typeId', parseInt(param.typeId));
         param.motoId && formData.append('motoId', parseInt(param.motoId));
+
         if (Array.isArray(param.modelId)) {
-            // Якщо так, додаємо кожен елемент масиву окремо
             param.modelId.forEach(id => formData.append('modelId', id));
         } else {
-            // Якщо modelId не є масивом, додаємо його як одиночний елемент
             param.modelId && formData.append('modelId', param.modelId);
+        }
+
+        if (Array.isArray(param.years)) {
+            param.years.forEach(year => formData.append('yearId', year));
+        } else {
+            param.years && formData.append('yearId', param.years);
         }
 
         param.images?.forEach((img, index) => {
@@ -102,6 +108,24 @@ export const addModels = createAsyncThunk(
             body: JSON.stringify({
                 ...param
             })
+        })
+
+        const data = await response.json()
+        if (!response.ok) {
+            return options.rejectWithValue(data);
+        }
+
+        return data
+    }
+)
+export const addYears = createAsyncThunk(
+    'async/addYears',
+    async function (param, options) {
+        const response = await publicFetch('api/years', {
+            method: "POST",
+            body: JSON.stringify(
+                {years: param}
+            )
         })
 
         const data = await response.json()
@@ -153,6 +177,18 @@ const addedSlice = createSlice({
             state.error = ''
         })
         builder.addCase(addMotos.rejected, (state, action) => {
+            state.fething = "rejected"
+            state.error = action.payload
+        })
+        //add addYears
+        builder.addCase(addYears.pending, (state, action) => {
+            state.fething = "loading"
+        })
+        builder.addCase(addYears.fulfilled, (state, action) => {
+            state.fething = "fullfilled"
+            state.error = ''
+        })
+        builder.addCase(addYears.rejected, (state, action) => {
             state.fething = "rejected"
             state.error = action.payload
         })

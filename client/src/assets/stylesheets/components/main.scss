@@ -381,6 +381,7 @@
   gap: 10%;
   & > div {
     flex: 1;
+    width: 50%;
   }
 }
 
@@ -490,4 +491,11 @@
     width: 40%;
     float: right;
     margin: 10px;
+}
+
+.YearTags-wrap {
+  margin-top: 15px;
+  &>div {
+    flex-wrap: wrap;
+  }
 }
