@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getTypes,
@@ -10,7 +10,7 @@ import {
   getRozborka,
 } from "../../toolkitReducers";
 
-import { TabsElement, VerticalTabs, CardRozborka } from "../../library";
+import { CardRozborka } from "../../library";
 import SelectDetails from "./SelectDetails";
 import { AsyncModalDevice } from "./asyncModalDevice";
 
@@ -30,6 +30,7 @@ export default function DetailsPage(props) {
   const [activeType, setActiveType] = useState(null);
   const [activeMoto, setActiveMoto] = useState(null);
   const [activeModel, setActiveModel] = useState(null);
+  const [activeYear, setActiveYear] = useState(null);
   const [detailType, setDetailType] = useState("new");
 
   const motos = useSelector(({ state }) => state.motos);
@@ -52,56 +53,56 @@ export default function DetailsPage(props) {
     return () => dispatch(clearData());
   }, []);
 
+  useEffect(() => {
+    if (types && motos && models && years) {
+      const filteredProducts = filterDevices();
+      setFilteredProducts(filteredProducts);
+    }
+  }, [activeType, activeMoto, activeModel, activeYear, types, motos, models, years]);
+
   const handleAddDevice = () => {
     setValueTab("");
-    setModalOpen(true);
     setIsNew(true);
+    setModalOpen(true);
   };
 
   const handleEditDevice = (id) => (e) => {
     setModalContent(devices?.find((device) => device.id === id));
-
-    setModalOpen(true);
-    // setImageTab(devices?.find(device => device.id === id).image)
     setIsNew(false);
+    setModalOpen(true);
   };
 
-  useEffect(() => {
-    if (types || motos || models) {
-      const sortedProducts = filterDevices();
-      setFilteredProducts(sortedProducts);
-    }
-  }, [activeType, activeMoto, activeModel, types, motos, models]);
-
-  const sortProducts = (type, id) => {
-    // Обновляем выбранные тип, мотоцикл и модель
-    if (type === "types") {
-      setActiveType(id);
-    } else if (type === "moto") {
-      setActiveMoto(id);
-    } else if (type === "models") {
-      setActiveModel(id);
-    }
+  const handleCloseModal = () => {
+    setModalOpen(false);
   };
 
-  // Функция для фильтрации устройств
+  const handleMenuSelect = (key) => {
+    const { type, moto, model, year } = parseMenuKey(key);
+    setActiveType(type);
+    setActiveMoto(moto);
+    setActiveModel(model);
+    setActiveYear(year);
+  };
+
+  const parseMenuKey = (key) => {
+    const parts = key.split('-');
+    const type = parseInt(parts[1]);
+    const moto = parts.includes('moto') ? parseInt(parts[3]) : null;
+    const model = parts.includes('model') ? parseInt(parts[5]) : null;
+    const year = parts.includes('year') ? parseInt(parts[7]) : null;
+    return { type, moto, model, year };
+  };
+
   const filterDevices = () => {
-    const isAnyFilterSelected =
-      activeType === null && activeMoto === null && activeModel === null;
+    if (!devices) return [];
+    if (!activeType && !activeMoto && !activeModel && !activeYear) return devices;
 
-    // Если ни один из параметров не выбран, возвращаем исходный массив устройств
-    if (isAnyFilterSelected) {
-      return devices;
-    }
-
-    const filteredDevices = devices?.filter(
-      (device) =>
-        (!activeType || device.typeId === activeType) &&
-        (!activeMoto || device.motoId === activeMoto) &&
-        (!activeModel || device.modelId.includes(String(activeModel)))
+    return devices.filter(device =>
+      (!activeType || device.typeId === activeType) &&
+      (!activeMoto || device.motoId === activeMoto) &&
+      (!activeModel || device.modelId.includes(String(activeModel))) &&
+      (!activeYear || device.yearId.includes(String(activeYear)))
     );
-
-    return filteredDevices;
   };
 
   const getProductsToRender = () => {
@@ -127,6 +128,7 @@ export default function DetailsPage(props) {
             models={models}
             devices={devices}
             years={years}
+            onMenuSelect={handleMenuSelect} // Передаем функцию обработки выбора элемента меню
           />
         </div>
         <div className="detali-content-items">
@@ -172,7 +174,7 @@ export default function DetailsPage(props) {
                   disabled={device.disabled}
                   handleEditDevice={handleEditDevice}
                   isLoggedIn={isLoggedIn}
-                  sortProducts={sortProducts}
+                  // sortProducts={sortProducts}
                   models={models}
                   modelId={device.modelId}
                   yearId={device.yearId}
