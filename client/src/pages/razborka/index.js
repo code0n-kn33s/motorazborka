@@ -160,7 +160,7 @@ export default function DetailsPage(props) {
               models={models}
             />
 
-            {sortedProducts?.map((device) => (
+            {filteredProducts?.map((device) => (
               <li key={device.id} className="device-item">
                 <CardRozborka
                   images={device.images}

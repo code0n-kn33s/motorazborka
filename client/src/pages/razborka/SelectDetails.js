@@ -9,46 +9,59 @@ const SelectDetails = ({ motos, types, models, devices, years, onMenuSelect }) =
   useEffect(() => {
     const generateMenuItems = () => {
       const items = types?.map(type => {
-        const marks = motos?.filter(moto => devices?.some(device => device.typeId === type.id && device.motoId === moto.id));
-        console.log('Marks for type', type.name, marks);
+        const marks = motos?.filter(moto => 
+          devices?.some(device => device.typeId === type.id && device.motoId === moto.id)
+        );
 
         const markItems = marks?.map(moto => {
           const modelItems = models?.filter(model => 
             model.motoId === moto.id && 
             devices?.some(device => device.modelId?.includes(String(model.id)) && device.typeId === type.id)
           );
-          console.log('Models for moto', moto.mark, modelItems);
 
           const modelItemList = modelItems?.map(model => {
             const yearItems = years?.filter(year => 
-              devices?.some(device => device.modelId?.includes(String(model.id)) && device.yearId?.includes(String(year.id)))
+              devices?.some(device => 
+                device.modelId?.includes(String(model.id)) && 
+                device.yearId?.includes(String(year.id)) &&
+                device.typeId === type.id && 
+                device.motoId === moto.id
+              )
             );
-            console.log('Years for model', model.model, yearItems);
 
+            if (yearItems?.length > 0) {
+              return {
+                key: `type-${type.id}-moto-${moto.id}-model-${model.id}`,
+                label: model.model,
+                children: yearItems.map(year => ({
+                  key: `type-${type.id}-moto-${moto.id}-model-${model.id}-year-${year.id}`,
+                  label: year.years
+                }))
+              };
+            }
+            return null;
+          })?.filter(item => item !== null); // Удаляем модели без доступных годов
+
+          if (modelItemList?.length > 0) {
             return {
-              key: `type-${type.id}-moto-${moto.id}-model-${model.id}`,
-              label: model.model,
-              children: yearItems?.length > 0 ? yearItems.map(year => ({
-                key: `type-${type.id}-moto-${moto.id}-model-${model.id}-year-${year.id}`,
-                label: year.years
-              })) : [],
+              key: `type-${type.id}-moto-${moto.id}`,
+              label: moto.mark,
+              children: modelItemList
             };
-          })?.filter(item => item.children?.length > 0 || item.label);
+          }
+          return null;
+        })?.filter(item => item !== null); // Удаляем марки без доступных моделей
 
+        if (markItems?.length > 0) {
           return {
-            key: `type-${type.id}-moto-${moto.id}`,
-            label: moto.mark,
-            children: modelItemList?.length > 0 ? modelItemList : [],
+            key: `type-${type.id}`,
+            icon: <AppstoreOutlined />,
+            label: type.name,
+            children: markItems
           };
-        })?.filter(item => item.children?.length > 0 || item.label);
-
-        return {
-          key: `type-${type.id}`,
-          icon: <AppstoreOutlined />,
-          label: type.name,
-          children: markItems?.length > 0 ? markItems : [],
-        };
-      })?.filter(item => item.children?.length > 0 || item.label);
+        }
+        return null;
+      })?.filter(item => item !== null); // Удаляем типы без доступных марок
 
       setMenuItems(items);
     };
