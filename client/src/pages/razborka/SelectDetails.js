@@ -5,9 +5,12 @@ import { Menu } from 'antd';
 const SelectDetails = ({ motos, types, models, devices, years, onMenuSelect }) => {
   const [menuItems, setMenuItems] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
   useEffect(() => {
     const generateMenuItems = () => {
+      if (!types || !motos || !models || !devices || !years) return;
+
       const items = types?.map(type => {
         const marks = motos?.filter(moto => 
           devices?.some(device => device.typeId === type.id && device.motoId === moto.id)
@@ -63,7 +66,17 @@ const SelectDetails = ({ motos, types, models, devices, years, onMenuSelect }) =
         return null;
       })?.filter(item => item !== null); // Удаляем типы без доступных марок
 
-      setMenuItems(items);
+      // Добавляем пункт "Всi" в начало меню
+      const allItems = [
+        {
+          key: 'all',
+          icon: <AppstoreOutlined />,
+          label: 'Всi',
+        },
+        ...items,
+      ];
+
+      setMenuItems(allItems);
     };
 
     generateMenuItems();
@@ -71,11 +84,25 @@ const SelectDetails = ({ motos, types, models, devices, years, onMenuSelect }) =
 
   const handleMenuClick = (e) => {
     setOpenKeys([]); // Закрываем все подменю при клике на любой элемент
+    setSelectedKeys([e.key]);
     onMenuSelect(e.key);
     console.log('Menu item clicked:', e.key);
   };
 
+  const handleTitleClick = (e) => {
+    const { key } = e;
+    const currentOpenKeys = openKeys.includes(key) ? openKeys.filter(k => k !== key) : [...openKeys, key];
+    setOpenKeys(currentOpenKeys);
+    setSelectedKeys([key]);
+    onMenuSelect(key);
+    console.log('Menu title clicked:', key);
+  };
+
   const parseMenuKey = (key) => {
+    if (key === 'all') {
+      return { type: null, moto: null, model: null, year: null };
+    }
+
     const parts = key.split('-');
     const type = parseInt(parts[1]);
     const moto = parts.includes('moto') ? parseInt(parts[3]) : null;
@@ -88,7 +115,7 @@ const SelectDetails = ({ motos, types, models, devices, years, onMenuSelect }) =
     return items?.map(item => {
       if (item.children && item.children.length > 0) {
         return (
-          <Menu.SubMenu key={item.key} icon={item.icon} title={item.label} onTitleClick={handleMenuClick}>
+          <Menu.SubMenu key={item.key} icon={item.icon} title={item.label} onTitleClick={handleTitleClick}>
             {renderMenuItems(item.children)}
           </Menu.SubMenu>
         );
@@ -101,6 +128,7 @@ const SelectDetails = ({ motos, types, models, devices, years, onMenuSelect }) =
     <Menu
       mode="vertical"
       selectable
+      selectedKeys={selectedKeys}
       openKeys={openKeys}
       onOpenChange={setOpenKeys}
     >
