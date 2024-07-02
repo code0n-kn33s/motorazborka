@@ -68,9 +68,7 @@ export default function Main(params) {
                     </div>
                 </div>
                 <div className="top-right-s-right">
-                    <div className="top-right-s-right-title">
-                        Двигуни в зборі
-                    </div>
+             
                     <div className="top-right-s-right-text">
                         На сьогоднішній день ми пропонуємо своїм клієнтам великий асортимент запчастин до популярних <b>японських і європейських</b> мотоциклів
                     </div>
