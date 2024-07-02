@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bb796458.css",
+    "main.js": "/static/js/main.347fd500.js",
+    "static/media/sl2.png": "/static/media/sl2.2e146590eede80d2d169.png",
+    "static/media/sl3.png": "/static/media/sl3.290b0151fd42f70948fe.png",
+    "static/media/motorcycles-mototsikl-mototsiklist-baik-chernii-dim-149145.jpeg": "/static/media/motorcycles-mototsikl-mototsiklist-baik-chernii-dim-149145.ebca43947b0ccc741cf8.jpeg",
+    "static/media/sl1.png": "/static/media/sl1.f26061f7785dc2715e9d.png",
+    "static/media/10.jpg": "/static/media/10.1fe09e2782ae9b94b023.jpg",
+    "static/media/6.jpg": "/static/media/6.db239b029feb151b9d00.jpg",
+    "static/media/logo.png": "/static/media/logo.3d724691da0d2b4f7b78.png",
+    "static/media/1.jpg": "/static/media/1.4d32a07325c5b96d903a.jpg",
+    "static/media/5.jpg": "/static/media/5.066c2ff81adc731dab52.jpg",
+    "static/media/3.jpg": "/static/media/3.ac233da94ea222bf4304.jpg",
+    "static/media/8.jpg": "/static/media/8.fa4ef7682ba7986933e5.jpg",
+    "static/media/9.jpg": "/static/media/9.1b7bec423081a35dc621.jpg",
+    "static/media/2.jpg": "/static/media/2.206042642e2dba8f914f.jpg",
+    "static/media/7.jpg": "/static/media/7.b01db88bf5806251e368.jpg",
+    "static/media/4.jpg": "/static/media/4.6871ab7ef3df8cb4930a.jpg",
+    "static/media/razborka.jpeg": "/static/media/razborka.f19022675c929d5bffb8.jpeg",
+    "static/media/delivery-svgrepo-com.svg": "/static/media/delivery-svgrepo-com.fa7be484ea1643ec501deb71a94832c2.svg",
+    "static/media/point-on-map-svgrepo-com.svg": "/static/media/point-on-map-svgrepo-com.faa59fe9bd52c60f7997e9a9e5dcf8e8.svg",
+    "index.html": "/index.html",
+    "static/media/InstaIcon.svg": "/static/media/InstaIcon.9cbe075b35d3bdddb87421c0a91a27ec.svg",
+    "static/media/YouTubeIcon.svg": "/static/media/YouTubeIcon.08222e2dbe87f778f227aed6196a4495.svg",
+    "static/media/TelegramIcon.svg": "/static/media/TelegramIcon.3d7f4c77ff99f13935c1c27349e799af.svg",
+    "static/media/Facebook.svg": "/static/media/Facebook.4857b0ec5b1c6220814de9fdcdbb2e79.svg",
+    "main.bb796458.css.map": "/static/css/main.bb796458.css.map",
+    "main.347fd500.js.map": "/static/js/main.347fd500.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bb796458.css",
+    "static/js/main.347fd500.js"
+  ]
+}
