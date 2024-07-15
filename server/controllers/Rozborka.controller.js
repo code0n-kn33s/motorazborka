@@ -55,7 +55,9 @@ class RozborkaController {
                     const imgName = uuid.v4() + '.jpg';
                     const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
-                    img.mv(uploadPath);
+                    await sharp(img.data)
+                    .resize({ width: 800 }) // Установите размеры, которые вам нужны
+                    .toFile(uploadPath);
 
                     photos.push(imgName);
                 }
@@ -63,7 +65,9 @@ class RozborkaController {
                 const imgName = uuid.v4() + '.jpg';
                 const uploadPath = path.resolve(__dirname, '..', 'static', imgName);
 
-                images.mv(uploadPath);
+                await sharp(img.data)
+                .resize({ width: 800 }) // Установите размеры, которые вам нужны
+                .toFile(uploadPath);
 
                 photos.push(imgName);
             }

@@ -19,7 +19,14 @@ const port = process.env.PORT || 5200;
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use(cors());
+const corsOptions = {
+  origin: 'http://motorazborka.com.ua',  // Разрешить только этот домен
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,  // Разрешить отправку куки и других данных аутентификации
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 app.use(fileUpload());
 
 app.post('/api/rozborka/create', RozborkaController.create);

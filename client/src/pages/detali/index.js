@@ -67,7 +67,7 @@ export default function DetailsPage(props) {
       const sortedProducts = filterDevices();
       setFilteredProducts(sortedProducts);
     }
-  }, [activeType, activeMoto, activeModel, types, motos, models]);
+  }, [activeType, activeMoto, activeModel, devices, types, motos, models]);
 
   const sortProducts = (type, id) => {
     // Обновляем выбранные тип, мотоцикл и модель

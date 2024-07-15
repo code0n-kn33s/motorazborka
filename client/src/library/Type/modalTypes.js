@@ -31,9 +31,7 @@ export const ModalTypes = (props) => {
 
         if (editValueTab) {
             if (isNew) {
-                dispatch(addTypes({
-                    name: editValueTab,
-                }))
+                dispatch(addTypes(editValueTab))
             } else {
                 dispatch(editTypes({
                     id: modalContent.id,

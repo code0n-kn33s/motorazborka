@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.bb796458.css",
-    "main.js": "/static/js/main.347fd500.js",
+    "main.js": "/static/js/main.cef208ee.js",
     "static/media/sl2.png": "/static/media/sl2.2e146590eede80d2d169.png",
     "static/media/sl3.png": "/static/media/sl3.290b0151fd42f70948fe.png",
     "static/media/motorcycles-mototsikl-mototsiklist-baik-chernii-dim-149145.jpeg": "/static/media/motorcycles-mototsikl-mototsiklist-baik-chernii-dim-149145.ebca43947b0ccc741cf8.jpeg",
@@ -26,10 +26,10 @@
     "static/media/TelegramIcon.svg": "/static/media/TelegramIcon.3d7f4c77ff99f13935c1c27349e799af.svg",
     "static/media/Facebook.svg": "/static/media/Facebook.4857b0ec5b1c6220814de9fdcdbb2e79.svg",
     "main.bb796458.css.map": "/static/css/main.bb796458.css.map",
-    "main.347fd500.js.map": "/static/js/main.347fd500.js.map"
+    "main.cef208ee.js.map": "/static/js/main.cef208ee.js.map"
   },
   "entrypoints": [
     "static/css/main.bb796458.css",
-    "static/js/main.347fd500.js"
+    "static/js/main.cef208ee.js"
   ]
 }

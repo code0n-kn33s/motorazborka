@@ -58,7 +58,7 @@ export default function DetailsPage(props) {
       const filteredProducts = filterDevices();
       setFilteredProducts(filteredProducts);
     }
-  }, [activeType, activeMoto, activeModel, activeYear, types, motos, models, years]);
+  }, [activeType, activeMoto, activeModel, activeYear, devices, types, motos, models, years]);
 
   const handleAddDevice = () => {
     setValueTab("");
